@@ -4,7 +4,10 @@
 (global-set-key "\C-ss" `isearch-forward)
 (global-set-key "\C-cs" `shell)
 (global-set-key "\C-sk" `kill-whole-line)
-
+(global-set-key "\C-xra" `append-to-register)
+(global-set-key "\C-xrp" `prepend-to-register)
+(autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
+(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 
 (defun my-c-mode-common-hook ()
 (linum-mode 1)
