@@ -1,11 +1,16 @@
 (setq inhibit-startup-screen 1)
+(column-number-mode 1)
 (global-unset-key "\C-s")
 (global-set-key "\C-ss" `isearch-forward)
 (global-set-key "\C-cs" `shell)
 (global-set-key "\C-sk" `kill-whole-line)
+
+
 (defun my-c-mode-common-hook ()
-(setq electric-indent-mode t)
+(linum-mode 1)
+(electric-indent-mode t)
 (setq c-basic-offset 4)
 (setq c-auto-newline 1)
+(c-set-style "Stroustrup")
        )
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
