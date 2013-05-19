@@ -1,0 +1,15 @@
+M-r Without moving text reposition point on the left margin.
+C-g change undo with redo.
+C-x C-o remove all but one blank line near position.
+C-x C-u upper case-region.
+C-x C-x expand region.
+C-u C-/ - undo changes under the region.
+C-M-\ - indent region.
+M-x evaluate region.
+C-x r s r - save region in a register r.
+C-x r i r - insert text from register r to buffer.
+C-c r a r - appent region to register r.
+C-x r m RET  - set the bookmark.
+C-x r m bookmark RET - set the bookmark named bookmark.
+C-x r b bookmark RET - jumb to bookmark bookmark.
+C-x r l - list all bookmarks.
