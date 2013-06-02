@@ -13,3 +13,7 @@ C-x r m RET  - set the bookmark.
 C-x r m bookmark RET - set the bookmark named bookmark.
 C-x r b bookmark RET - jumb to bookmark bookmark.
 C-x r l - list all bookmarks.
+C-SPC C-SPC - set bookmark in ring
+C-u C-SPC - go to previouse bookmark in ring
+C-x C-SPC - same, but behaves with global ring
+C-w after C-s - adds next word to search string
