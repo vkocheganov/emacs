@@ -6,7 +6,7 @@
 (global-set-key "\C-sk" `kill-whole-line)
 (global-set-key "\C-xra" `append-to-register)
 (global-set-key "\C-xrp" `prepend-to-register)
-(global-set-key "\C-cp" 'windmove-left) 
+(global-set-key "\C-cb" 'windmove-left) 
 (global-set-key "\C-cf" 'windmove-right)
 (global-set-key "\C-cp" 'windmove-up) 
 (global-set-key "\C-cn" 'windmove-down)
@@ -60,3 +60,17 @@
   ;; http://shreevatsa.wordpress.com/2006/10/22/emacs-copypaste-and-x/
   ;; http://www.mail-archive.com/help-gnu-emacs@gnu.org/msg03577.html
  ))
+
+(add-to-list 'load-path "~/temp_files/emacs/monky")
+(load "monky")
+(setq monky-process-type 'cmdserver)
+(add-to-list 'load-path "~/temp_files/emacs/complitions")
+(load "shell-completion")
+(load "bash-completion")
+(add-to-list 'load-path "~/temp_files/emacs/complitions/readline-complete.el")
+(load "readline-complete")
+(add-to-list 'load-path "~/temp_files/emacs/term")
+(load "multi-term")
+
+
+;(add-hook 'shell-mode-hook 'ac-rlc-setup-sources)

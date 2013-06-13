@@ -1,4 +1,4 @@
-M-r Without moving text reposition point on the left margin.
+M-r   With no argument, position point at center of window. An argument specifies vertical position within the window; zero means top of window, negative means relative to bottom of window.
 C-g change undo with redo.
 C-x C-o remove all but one blank line near position.
 C-x C-u upper case-region.
