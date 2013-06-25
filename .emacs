@@ -61,16 +61,29 @@
   ;; http://www.mail-archive.com/help-gnu-emacs@gnu.org/msg03577.html
  ))
 
-(add-to-list 'load-path "~/temp_files/emacs/monky")
-(load "monky")
+;(add-to-list 'load-path "~/temp_files/emacs/monky")
+;(load "monky")
+(add-to-list 'load-path "~/temp_files/emacs/ahg")
+(load "ahg")
+
+;;(require 'mercurial)
 (setq monky-process-type 'cmdserver)
 (add-to-list 'load-path "~/temp_files/emacs/complitions")
 (load "shell-completion")
 (load "bash-completion")
 (add-to-list 'load-path "~/temp_files/emacs/complitions/readline-complete.el")
 (load "readline-complete")
-(add-to-list 'load-path "~/temp_files/emacs/term")
-(load "multi-term")
-
+(add-to-list 'load-path "~/temp_files/emacs/")
+(load "autopair")
+(add-to-list 'load-path "~/temp_files/emacs/")
+(load "ascope")
+(setq load-path (cons "~/temp_files/global-6.2.8" load-path))
+(autoload 'gtags-mode "gtags" "" t)
+(setq c-mode-hook
+          '(lambda ()
+              (gtags-mode 1)
+      ))
+(add-to-list 'load-path "~/temp_files/emacs/magit-1.2.0")
+(load "magit")
 
 ;(add-hook 'shell-mode-hook 'ac-rlc-setup-sources)
