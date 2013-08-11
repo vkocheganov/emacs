@@ -1,4 +1,5 @@
 (setq inhibit-startup-screen 1)
+(setq-default indent-tabs-mode nil)
 (column-number-mode 1)
 (global-unset-key "\C-s")
 (global-set-key "\C-ss" `isearch-forward)
@@ -12,6 +13,8 @@
 (global-set-key "\C-cn" 'windmove-down)
 (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+;; To enable emacs client
+(server-start)
 
 (defun my-c-mode-common-hook ()
 (c-set-style "Stroustrup")
@@ -85,5 +88,33 @@
       ))
 (add-to-list 'load-path "~/temp_files/emacs/magit-1.2.0")
 (load "magit")
+(global-set-key "\C-cms" 'magit-status)
 
-;(add-hook 'shell-mode-hook 'ac-rlc-setup-sources)
+;; directory tree plugin
+(add-to-list 'load-path "~/temp_files/emacs")
+(require 'dirtree)
+(require 'tree-mode)
+(require 'windata)
+(autoload 'dirtree "dirtree" "Add directory to tree view" t)
+
+(add-to-list 'load-path "~/temp_files/emacs/highlight-symbol.el/")
+(require 'highlight-symbol)
+(global-set-key "\C-cha" 'highlight-symbol-at-point)
+(global-set-key "\C-chn" 'highlight-symbol-next)
+(global-set-key "\C-chp" 'highlight-symbol-prev)
+(global-set-key "\C-chr" 'highlight-symbol-query-replace)
+
+(put 'set-goal-column 'disabled nil)
+
+(add-to-list 'load-path "~/temp_files/emacs/etags-select.el")
+(require 'etags-select)
+
+(defun create-tags (dir-name)
+    "Create tags file."
+    (interactive "DDirectory: ")
+    (shell-command
+     (format "%s -f %s/TAGS -e --languages=C,C++ -R %s" "ctags" dir-name dir-name))
+  )
+
+(require 'git)
+;(ido-mode 1)
