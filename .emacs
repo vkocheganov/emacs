@@ -71,16 +71,6 @@
 
 ;;(require 'mercurial)
 (setq monky-process-type 'cmdserver)
-(add-to-list 'load-path "~/temp_files/emacs/complitions")
-(load "shell-completion")
-(load "bash-completion")
-(add-to-list 'load-path "~/temp_files/emacs/complitions/readline-complete.el")
-(load "readline-complete")
-(add-to-list 'load-path "~/temp_files/emacs/")
-(load "autopair")
-(add-to-list 'load-path "~/temp_files/emacs/")
-(load "ascope")
-(setq load-path (cons "~/temp_files/global-6.2.8" load-path))
 (autoload 'gtags-mode "gtags" "" t)
 (setq c-mode-hook
           '(lambda ()
