@@ -22,9 +22,9 @@
 (electric-indent-mode t)
 (setq c-basic-offset 4)
 (setq c-auto-newline 1)
-       )
+(setq c-hanging-semi&comma-criteria nil)
+)
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
-
 
 ;; http://hugoheden.wordpress.com/2009/03/08/copypaste-with-emacs-in-terminal/
 ;; I prefer using the "clipboard" selection (the one the
