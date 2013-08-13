@@ -17,13 +17,13 @@
 (server-start)
 
 (defun my-c-mode-common-hook ()
-(c-set-style "Stroustrup")
-(linum-mode 1)
-(electric-indent-mode t)
-(setq c-basic-offset 4)
-(setq c-auto-newline 1)
-(setq c-hanging-semi&comma-criteria nil)
-)
+  (c-set-style "Stroustrup")
+  (linum-mode 1)
+  (electric-indent-mode t)
+  (setq c-basic-offset 4)
+  (setq c-auto-newline 1)
+  (setq c-hanging-semi&comma-criteria nil)
+  )
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
 ;; http://hugoheden.wordpress.com/2009/03/08/copypaste-with-emacs-in-terminal/
@@ -37,35 +37,35 @@
 ;; http://www.vergenet.net/~conrad/software/xsel/ -- "a command-line
 ;; program for getting and setting the contents of the X selection"
 (unless window-system
- (when (getenv "DISPLAY")
-  ;; Callback for when user cuts
-  (defun xsel-cut-function (text &optional push)
-    ;; Insert text to temp-buffer, and "send" content to xsel stdin
-    (with-temp-buffer
-      (insert text)
-      ;; I prefer using the "clipboard" selection (the one the
-      ;; typically is used by c-c/c-v) before the primary selection
-      ;; (that uses mouse-select/middle-button-click)
-      (call-process-region (point-min) (point-max) "xsel" nil 0 nil "--clipboard" "--input")))
-  ;; Call back for when user pastes
-  (defun xsel-paste-function()
-    ;; Find out what is current selection by xsel. If it is different
-    ;; from the top of the kill-ring (car kill-ring), then return
-    ;; it. Else, nil is returned, so whatever is in the top of the
-    ;; kill-ring will be used.
-    (let ((xsel-output (shell-command-to-string "xsel --clipboard --output")))
-      (unless (string= (car kill-ring) xsel-output)
-	xsel-output )))
-  ;; Attach callbacks to hooks
-  (setq interprogram-cut-function 'xsel-cut-function)
-  (setq interprogram-paste-function 'xsel-paste-function)
-  ;; Idea from
-  ;; http://shreevatsa.wordpress.com/2006/10/22/emacs-copypaste-and-x/
-  ;; http://www.mail-archive.com/help-gnu-emacs@gnu.org/msg03577.html
- ))
+  (when (getenv "DISPLAY")
+    ;; Callback for when user cuts
+    (defun xsel-cut-function (text &optional push)
+      ;; Insert text to temp-buffer, and "send" content to xsel stdin
+      (with-temp-buffer
+        (insert text)
+        ;; I prefer using the "clipboard" selection (the one the
+        ;; typically is used by c-c/c-v) before the primary selection
+        ;; (that uses mouse-select/middle-button-click)
+        (call-process-region (point-min) (point-max) "xsel" nil 0 nil "--clipboard" "--input")))
+    ;; Call back for when user pastes
+    (defun xsel-paste-function()
+      ;; Find out what is current selection by xsel. If it is different
+      ;; from the top of the kill-ring (car kill-ring), then return
+      ;; it. Else, nil is returned, so whatever is in the top of the
+      ;; kill-ring will be used.
+      (let ((xsel-output (shell-command-to-string "xsel --clipboard --output")))
+        (unless (string= (car kill-ring) xsel-output)
+          xsel-output )))
+    ;; Attach callbacks to hooks
+    (setq interprogram-cut-function 'xsel-cut-function)
+    (setq interprogram-paste-function 'xsel-paste-function)
+    ;; Idea from
+    ;; http://shreevatsa.wordpress.com/2006/10/22/emacs-copypaste-and-x/
+    ;; http://www.mail-archive.com/help-gnu-emacs@gnu.org/msg03577.html
+    ))
 
-;(add-to-list 'load-path "~/temp_files/emacs/monky")
-;(load "monky")
+                                        ;(add-to-list 'load-path "~/temp_files/emacs/monky")
+                                        ;(load "monky")
 (add-to-list 'load-path "~/temp_files/emacs/ahg")
 (load "ahg")
 
@@ -73,12 +73,9 @@
 (setq monky-process-type 'cmdserver)
 (autoload 'gtags-mode "gtags" "" t)
 (setq c-mode-hook
-          '(lambda ()
-              (gtags-mode 1)
-      ))
-(add-to-list 'load-path "~/temp_files/emacs/magit-1.2.0")
-(load "magit")
-(global-set-key "\C-cms" 'magit-status)
+      '(lambda ()
+         (gtags-mode 1)
+         ))
 
 ;; directory tree plugin
 (add-to-list 'load-path "~/temp_files/emacs")
@@ -100,11 +97,13 @@
 (require 'etags-select)
 
 (defun create-tags (dir-name)
-    "Create tags file."
-    (interactive "DDirectory: ")
-    (shell-command
-     (format "%s -f %s/TAGS -e --languages=C,C++ -R %s" "ctags" dir-name dir-name))
+  "Create tags file."
+  (interactive "DDirectory: ")
+  (shell-command
+   (format "%s -f %s/TAGS -e --languages=C,C++ -R %s" "ctags" dir-name dir-name))
   )
 
 (require 'git)
-;(ido-mode 1)
+;;(ido-mode 1)
+;;add new cc-mode compiled files to load-path
+(add-to-list 'load-path "~/temp_files/emacs/cc-mode-5.32.5")
