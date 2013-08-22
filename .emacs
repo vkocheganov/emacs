@@ -105,5 +105,9 @@
 
 (require 'git)
 ;;(ido-mode 1)
-;;add new cc-mode compiled files to load-path
+;;add new cc-mode compiled files to load-path d
 (add-to-list 'load-path "~/temp_files/emacs/cc-mode-5.32.5")
+
+(add-to-list 'load-path "~/temp_files/emacs/yasnippet")
+(require 'yasnippet)
+(yas-global-mode 1)
