@@ -70,14 +70,6 @@
 (add-to-list 'load-path "~/temp_files/emacs/ahg")
 (load "ahg")
 
-;;(require 'mercurial)
-(setq monky-process-type 'cmdserver)
-(autoload 'gtags-mode "gtags" "" t)
-(setq c-mode-hook
-      '(lambda ()
-         (gtags-mode 1)
-         ))
-
 ;; directory tree plugin
 (add-to-list 'load-path "~/temp_files/emacs")
 (require 'dirtree)
@@ -109,11 +101,9 @@
 ;;add new cc-mode compiled files to load-path d
 (add-to-list 'load-path "~/temp_files/emacs/cc-mode-5.32.5")
 
-(add-to-list 'load-path "~/temp_files/emacs/yasnippet")
-(require 'yasnippet)
-(yas-global-mode 1)
 (add-to-list 'load-path "~/.emacs.d")
 (require 'auto-complete)
-;; (add-to-list 'ac-dictionary-directories "~/.emacs.d/dict")
-;; (require 'auto-complete-config)
-;; (ac-config-default)
+(add-to-list 'ac-dictionary-directories "~/.emacs.d/dict")
+(require 'auto-complete-config)
+(ac-config-default)
+(require 'yasnippet-bundle)
