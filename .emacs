@@ -104,11 +104,11 @@
 ;; to install auto complete mode execute load-file "<ac_folder>/etc/install.el
 (add-to-list 'load-path "~/.emacs.d")
 (require 'auto-complete)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/dict")
+(add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
 (require 'auto-complete-config)
 (ac-config-default)
 ;; add own dictionary for autocomplete
-(add-to-list 'ac-user-dictionary-files "~/.emacs.d/github_emacs/vic_ac_dictionary")
+(add-to-list 'ac-user-dictionary-files "~/.emacs.d/github_emacs/auto-complete-1.3.1/dict/vic_ac_dictionary")
 
 ;; different templates for c/c++ structures
 (require 'yasnippet-bundle)
