@@ -67,17 +67,17 @@
 
                                         ;(add-to-list 'load-path "~/temp_files/emacs/monky")
                                         ;(load "monky")
-(add-to-list 'load-path "~/temp_files/emacs/ahg")
+(add-to-list 'load-path "~/.emacs.d/github_emacs/ahg")
 (load "ahg")
 
 ;; directory tree plugin
-(add-to-list 'load-path "~/temp_files/emacs")
+(add-to-list 'load-path "~/.emacs.d/github_emacs")
 (require 'dirtree)
 (require 'tree-mode)
 (require 'windata)
 (autoload 'dirtree "dirtree" "Add directory to tree view" t)
 
-(add-to-list 'load-path "~/temp_files/emacs/highlight-symbol.el/")
+(add-to-list 'load-path "~/.emacs.d/github_emacs/highlight-symbol.el/")
 (require 'highlight-symbol)
 (global-set-key "\C-cha" 'highlight-symbol-at-point)
 (global-set-key "\C-chn" 'highlight-symbol-next)
@@ -86,7 +86,7 @@
 
 (put 'set-goal-column 'disabled nil)
 
-(add-to-list 'load-path "~/temp_files/emacs/etags-select.el")
+(add-to-list 'load-path "~/.emacs.d/github_emacs/etags-select.el")
 (require 'etags-select)
 
 (defun create-tags (dir-name)
@@ -99,7 +99,7 @@
 (require 'git)
 ;;(ido-mode 1)
 ;;add new cc-mode compiled files to load-path d
-(add-to-list 'load-path "~/temp_files/emacs/cc-mode-5.32.5")
+(add-to-list 'load-path "~/.emacs.d/github_emacs/cc-mode-5.32.5")
 
 (add-to-list 'load-path "~/.emacs.d")
 (require 'auto-complete)
