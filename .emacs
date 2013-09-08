@@ -11,6 +11,8 @@
 (global-set-key "\C-cf" 'windmove-right)
 (global-set-key "\C-cp" 'windmove-up) 
 (global-set-key "\C-cn" 'windmove-down)
+(global-set-key "\C-xp" (lambda () (interactive) (other-window -1)))
+
 (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 ;; To enable emacs client
