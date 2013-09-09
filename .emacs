@@ -89,13 +89,14 @@
 ;; (load "ahg")
 
 ;; directory tree plugin
-(add-to-list 'load-path "~/temp_files/emacs")
+(add-to-list 'load-path "~/.emacs.d/github_emacs")
 (require 'dirtree)
 (require 'tree-mode)
 (require 'windata)
 (autoload 'dirtree "dirtree" "Add directory to tree view" t)
+
 ;; For highlighting symbols
-(add-to-list 'load-path "~/temp_files/emacs/highlight-symbol.el/")
+(add-to-list 'load-path "~/.emacs.d/github_emacs/highlight-symbol.el/")
 (require 'highlight-symbol)
 (global-set-key "\C-cha" 'highlight-symbol-at-point)
 (global-set-key "\C-chn" 'highlight-symbol-next)
@@ -105,7 +106,7 @@
 ;; To edit several lines from fixed point
 (put 'set-goal-column 'disabled nil)
 
-;; (add-to-list 'load-path "~/temp_files/emacs/etags-select.el")
+;; (add-to-list 'load-path "~/.emacs.d/github_emacs/etags-select.el")
 ;; (require 'etags-select)
 
 ;; Define simple command to create TAGS file
@@ -119,13 +120,18 @@
 ;; (require 'git)
 ;; (ido-mode 1)
 ;; add new cc-mode compiled files to load-path d
-(add-to-list 'load-path "~/temp_files/emacs/cc-mode-5.32.5")
+(add-to-list 'load-path "~/.emacs.d/github_emacs/cc-mode-5.32.5")
 
 ;; Configuring auto-complete mode
+;; to install auto complete mode execute load-file "<ac_folder>/etc/install.el
 (add-to-list 'load-path "~/.emacs.d")
 (require 'auto-complete)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/dict")
+(add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
 (require 'auto-complete-config)
 (ac-config-default)
+;; add own dictionary for autocomplete
+(add-to-list 'ac-user-dictionary-files "~/.emacs.d/github_emacs/auto-complete-1.3.1/dict/vic_ac_dictionary")
+
+;; different templates for c/c++ structures
 (require 'yasnippet-bundle)
 
