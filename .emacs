@@ -83,9 +83,9 @@
     ;; http://www.mail-archive.com/help-gnu-emacs@gnu.org/msg03577.html
     ))
 
-;;(add-to-list 'load-path "~/temp_files/emacs/monky")
+;;(add-to-list 'load-path "~/.emacs.d/github_emacs/monky")
 ;;(load "monky")
-;; (add-to-list 'load-path "~/temp_files/emacs/ahg")
+;; (add-to-list 'load-path "~/.emacs.d/github_emacs/ahg")
 ;; (load "ahg")
 
 ;; directory tree plugin
@@ -94,7 +94,6 @@
 (require 'tree-mode)
 (require 'windata)
 (autoload 'dirtree "dirtree" "Add directory to tree view" t)
-
 ;; For highlighting symbols
 (add-to-list 'load-path "~/.emacs.d/github_emacs/highlight-symbol.el/")
 (require 'highlight-symbol)
@@ -126,12 +125,13 @@
 ;; to install auto complete mode execute load-file "<ac_folder>/etc/install.el
 (add-to-list 'load-path "~/.emacs.d")
 (require 'auto-complete)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+(add-to-list 'ac-dictionary-directories "~/.emacs.d/dict")
 (require 'auto-complete-config)
 (ac-config-default)
 ;; add own dictionary for autocomplete
 (add-to-list 'ac-user-dictionary-files "~/.emacs.d/github_emacs/auto-complete-1.3.1/dict/vic_ac_dictionary")
-
 ;; different templates for c/c++ structures
 (require 'yasnippet-bundle)
 
+;; Indent after pressing RET
+(global-set-key (kbd "RET") 'newline-and-indent)
