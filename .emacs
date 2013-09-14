@@ -135,3 +135,23 @@
 
 ;; Indent after pressing RET
 (global-set-key (kbd "RET") 'newline-and-indent)
+
+(add-to-list 'load-path "~/.emacs.d/github_emacs/auto-complete-ctags")
+(require 'auto-complete-ctags-cpp)
+
+;; Latex
+(require 'ac-math)
+(defun my-latex-mode-hook ()
+  (auto-complete-mode 1)
+  (linum-mode 1)
+  ;; Enable autocomplition mode
+  )
+(add-hook 'latex-mode-hook 'my-latex-mode-hook)
+
+
+;; Fit to page for doc-view (for latex)
+(add-to-list 'load-path "~/.emacs.d/github_emacs/doc-view-fit-to-page")
+(require 'doc-view-fit-page)
+(add-hook 'doc-view-mode-hook
+          '(lambda ()
+             (doc-view-fit-page)))
