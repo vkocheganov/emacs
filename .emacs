@@ -136,8 +136,8 @@
 ;; Indent after pressing RET
 (global-set-key (kbd "RET") 'newline-and-indent)
 
-(add-to-list 'load-path "~/.emacs.d/github_emacs/auto-complete-ctags")
-(require 'auto-complete-ctags-cpp)
+;; (add-to-list 'load-path "~/.emacs.d/github_emacs/auto-complete-ctags")
+;; (require 'auto-complete-ctags-cpp)
 
 ;; Latex
 (require 'ac-math)
@@ -155,3 +155,7 @@
 (add-hook 'doc-view-mode-hook
           '(lambda ()
              (doc-view-fit-page)))
+
+(autoload 'octave-mode "octave-mod" nil t)
+(setq auto-mode-alist
+      (cons '("\\.m$" . octave-mode) auto-mode-alist))
