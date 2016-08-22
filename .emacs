@@ -1,5 +1,5 @@
 ;; Disable startup-screen
-(setq inhibit-startup-screen 1)
+;(setq inhibit-startup-screen 1)
 ;; Whitespaces instead of TABS. Always
 (setq-default indent-tabs-mode nil)
 ;; Show column number (along with line number)
@@ -37,11 +37,12 @@
   ;; Insert new line after '{' e.g.
   (c-toggle-auto-newline 1)
   ;; Enable autocomplition mode
-  (auto-complete-mode 1)
+;  (auto-complete-mode 1)
   ;; Indent size
   (setq c-basic-offset 4)
   ;; Do not insert new line after ';' or ','
   (setq c-hanging-semi&comma-criteria nil)
+  (setq comment-start "//"  comment-end   "")
   )
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
@@ -51,80 +52,9 @@
 ;; (that uses mouse-select/middle-button-click)
 (setq x-select-enable-clipboard t)
 
+(require 'package)
+(add-to-list 'package-archives
+                  '("melpa-stable" . "http://stable.melpa.org/packages/") t)
 
-;;(add-to-list 'load-path "~/.emacs.d/github_emacs/monky")
-;;(load "monky")
-;; (add-to-list 'load-path "~/.emacs.d/github_emacs/ahg")
-;; (load "ahg")
-
-;; directory tree plugin
-(add-to-list 'load-path "~/.emacs.d/github_emacs")
-(require 'dirtree)
-(require 'tree-mode)
-(require 'windata)
-(autoload 'dirtree "dirtree" "Add directory to tree view" t)
-;; For highlighting symbols
-(add-to-list 'load-path "~/.emacs.d/github_emacs/highlight-symbol.el/")
-(require 'highlight-symbol)
-(global-set-key "\C-cha" 'highlight-symbol-at-point)
-(global-set-key "\C-chn" 'highlight-symbol-next)
-(global-set-key "\C-chp" 'highlight-symbol-prev)
-(global-set-key "\C-chr" 'highlight-symbol-query-replace)
-
-;; To edit several lines from fixed point
-(put 'set-goal-column 'disabled nil)
-
-;; (add-to-list 'load-path "~/.emacs.d/github_emacs/etags-select.el")
-;; (require 'etags-select)
-
-;; Define simple command to create TAGS file
-(defun create-tags (dir-name)
-  "Create tags file."
-  (interactive "DDirectory: ")
-  (shell-command
-   (format "%s -f %s/TAGS -e --languages=C,C++ -R %s" "ctags" dir-name dir-name))
-  )
-
-;; (require 'git)
-;; (ido-mode 1)
-;; add new cc-mode compiled files to load-path d
-(add-to-list 'load-path "~/.emacs.d/github_emacs/cc-mode-5.32.5")
-
-;; Configuring auto-complete mode
-;; to install auto complete mode execute load-file "<ac_folder>/etc/install.el
-(add-to-list 'load-path "~/.emacs.d")
-(require 'auto-complete)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/dict")
-(require 'auto-complete-config)
-(ac-config-default)
-;; add own dictionary for autocomplete
-(add-to-list 'ac-user-dictionary-files "~/.emacs.d/github_emacs/auto-complete-1.3.1/dict/vic_ac_dictionary")
-;; different templates for c/c++ structures
-(require 'yasnippet-bundle)
-
-;; Indent after pressing RET
-(global-set-key (kbd "RET") 'newline-and-indent)
-
-;; (add-to-list 'load-path "~/.emacs.d/github_emacs/auto-complete-ctags")
-;; (require 'auto-complete-ctags-cpp)
-
-;; Latex
-(require 'ac-math)
-(defun my-latex-mode-hook ()
-  (auto-complete-mode 1)
-  (linum-mode 1)
-  ;; Enable autocomplition mode
-  )
-(add-hook 'latex-mode-hook 'my-latex-mode-hook)
-
-
-;; Fit to page for doc-view (for latex)
-(add-to-list 'load-path "~/.emacs.d/github_emacs/doc-view-fit-to-page")
-(require 'doc-view-fit-page)
-(add-hook 'doc-view-mode-hook
-          '(lambda ()
-             (doc-view-fit-page)))
-
-(autoload 'octave-mode "octave-mod" nil t)
-(setq auto-mode-alist
-      (cons '("\\.m$" . octave-mode) auto-mode-alist))
+(package-initialize)
+                         
