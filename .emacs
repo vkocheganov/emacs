@@ -12,6 +12,7 @@
 (global-set-key "\C-sk" `kill-whole-line)
 ;; Commands to deal with registers.
 ;; Use C-x r i to insert from register
+;; Use C-x r s r to insert to register
 (global-set-key "\C-xra" `append-to-register)
 (global-set-key "\C-xrp" `prepend-to-register)
 ;; Commands to switch windows in the same frame
@@ -50,11 +51,9 @@
 ;; I prefer using the "clipboard" selection (the one the
 ;; typically is used by c-c/c-v) before the primary selection
 ;; (that uses mouse-select/middle-button-click)
-(setq x-select-enable-clipboard t)
+;(setq x-select-enable-clipboard t)
 
-(require 'package)
 (add-to-list 'package-archives
                   '("melpa-stable" . "http://stable.melpa.org/packages/") t)
-
 (package-initialize)
                          
