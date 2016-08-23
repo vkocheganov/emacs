@@ -47,11 +47,6 @@
   )
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
-;; http://hugoheden.wordpress.com/2009/03/08/copypaste-with-emacs-in-terminal/
-;; I prefer using the "clipboard" selection (the one the
-;; typically is used by c-c/c-v) before the primary selection
-;; (that uses mouse-select/middle-button-click)
-;(setq x-select-enable-clipboard t)
 (require 'package)
 (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
 (package-initialize)
