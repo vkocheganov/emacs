@@ -52,8 +52,7 @@
 ;; typically is used by c-c/c-v) before the primary selection
 ;; (that uses mouse-select/middle-button-click)
 ;(setq x-select-enable-clipboard t)
-
-(add-to-list 'package-archives
-                  '("melpa-stable" . "http://stable.melpa.org/packages/") t)
+(require 'package)
+(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
 (package-initialize)
                          
