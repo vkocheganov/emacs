@@ -4,27 +4,26 @@
 (setq-default indent-tabs-mode nil)
 ;; Show column number (along with line number)
 (column-number-mode 1)
-;; Disable key to provide bigger variety of bindigs
-(global-unset-key "\C-s")
+(global-set-key "\C-s\C-n" `neotree-toggle)
 
-(global-set-key "\C-ss" `isearch-forward)
-(global-set-key "\C-cs" `shell)
-(global-set-key "\C-sk" `kill-whole-line)
+(global-set-key "\C-s\C-k" `kill-whole-line)
 ;; Commands to deal with registers.
 ;; Use C-x r i to insert from register
 ;; Use C-x r s r to insert to register
 (global-set-key "\C-xra" `append-to-register)
 (global-set-key "\C-xrp" `prepend-to-register)
 ;; Commands to switch windows in the same frame
-;; (global-set-key "\C-cb" 'windmove-left) 
-;; (global-set-key "\C-cf" 'windmove-right)
-;; (global-set-key "\C-cp" 'windmove-up) 
-;; (global-set-key "\C-cn" 'windmove-down)
+(global-set-key "\C-cb" 'windmove-left) 
+(global-set-key "\C-cf" 'windmove-right)
+(global-set-key "\C-cp" 'windmove-up) 
+(global-set-key "\C-cn" 'windmove-down)
 (global-set-key "\C-xp" (lambda () (interactive) (other-window -1)))
 ;; For proper processing of colors.
 (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 
+(global-unset-key "\C-xm")
+(global-set-key (kbd "\C-xms") 'magit-status)
 ;; To enable emacs-client programm for committing
 (server-start)
 
@@ -35,8 +34,6 @@
   (linum-mode 1)
   ;; Following command affects to c-toggle-auto-newline                                                    ;; Automatically indent e.g.
   (c-toggle-electric-state 1)
-  ;; Insert new line after '{' e.g.
-  (c-toggle-auto-newline 1)
   ;; Enable autocomplition mode
 ;  (auto-complete-mode 1)
   ;; Indent size
@@ -66,3 +63,35 @@
  ;; If there is more than one, they won't work right.
  )
 (load-theme 'tango-dark)
+
+(require 'helm-config)
+(require 'xcscope)
+
+;; (define-key global-map [\M-.] 'cscope-find-global-definition)
+;; (global-set-key "\M-." `cscope-find-global-definition)
+(global-set-key [f3]  `cscope-set-initial-directory)
+(global-set-key [f4]  `cscope-unset-initial-directory)
+(global-set-key [f5]  `cscope-find-this-symbol)
+(global-set-key [f6]  `cscope-find-global-definition)
+(global-set-key [f7]  'cscope-find-global-definition-no-prompting)
+(global-set-key [f8]  `cscope-pop-mark)
+(global-set-key [f9]  `cscope-history-forward-line)
+(global-set-key [f10]  `cscope-history-forward-file)
+(global-set-key [f11]  `cscope-history-backward-line)
+(global-set-key [f12]  `cscope-history-backward-file)
+;; (global-set-key [escape-f10]  `cscope-display-buffer)
+;; (global-set-key (kbd "\M-<f10>")  `cscope-display-buffer)
+;; (global-set-key "\M-f10"  `cscope-display-buffer-toggle)
+
+(defun gcm-scroll-up ()
+  (interactive)
+  (scroll-down 1))
+(defun gcm-scroll-down ()
+  (interactive)
+  (scroll-up 1))
+
+(global-set-key [(down)] 'gcm-scroll-down)
+(global-set-key [(up)]   'gcm-scroll-up)
+
+
+(require 'protobuf-mode)
