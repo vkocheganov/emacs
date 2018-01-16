@@ -4,9 +4,9 @@
 (setq-default indent-tabs-mode nil)
 ;; Show column number (along with line number)
 (column-number-mode 1)
-(global-set-key "\C-s\C-n" `neotree-toggle)
+;;(global-set-key "\C-s\C-n" `neotree-toggle)
 
-(global-set-key "\C-s\C-k" `kill-whole-line)
+;;(global-set-key "\C-s\C-k" `kill-whole-line)
 ;; Commands to deal with registers.
 ;; Use C-x r i to insert from register
 ;; Use C-x r s r to insert to register
