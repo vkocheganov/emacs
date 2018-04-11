@@ -93,5 +93,3 @@
 (global-set-key [(down)] 'gcm-scroll-down)
 (global-set-key [(up)]   'gcm-scroll-up)
 
-
-(require 'protobuf-mode)
