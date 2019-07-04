@@ -106,8 +106,8 @@
 
 (setq python-command "/usr/bin/python3.4")
 
-
-;; C++ IDE setup
+;; C++ IDE setup. Guide: https://tuhdo.github.io/c-ide.html
+;; Helm guide: https://tuhdo.github.io/helm-intro.html
 (setq
  helm-gtags-ignore-case t
  helm-gtags-auto-update t
@@ -141,6 +141,14 @@
 (setq sr-speedbar-right-side nil)
 (setq sr-speedbar-skip-other-window-p t)
 
+
+
+
+
+(defun my-lua-mode-hook ()
+  (setq lua-indent-level 4)
+  )
+(add-hook 'lua-mode-hook 'my-lua-mode-hook)
 
 
 
@@ -192,3 +200,13 @@
 ;;   (shell (get-buffer-create "my-shell-buf"))
 ;;   (process-send-string (get-buffer-process "my-shell-buf") (concat cmd "\n")))
 ;; (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+(defun copy-file-name ()
+  "Copy the current buffer file name to the clipboard."
+  (interactive)
+  (let ((filename (if (equal major-mode 'dired-mode)
+                      default-directory
+                    (buffer-file-name))))
+    (when filename
+      (kill-new filename)
+      (message "Copied buffer file name '%s' to the clipboard." filename))))
+
