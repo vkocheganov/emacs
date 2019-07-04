@@ -7,7 +7,11 @@
 ;;(global-set-key "\C-s\C-n" `neotree-toggle)
 
 (require 'package)
-(add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
+;; In case I'm on work machine, use https instead of http
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+(add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
+;; (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
+
 (package-initialize)
 
 ;;(load-theme 'northcode)
@@ -104,7 +108,24 @@
       savehist-file "~/.emacs.d/savehist")
 (savehist-mode t)
 
+
+;; Python settings
 (setq python-command "/usr/bin/python3.4")
+(add-hook 'python-mode-hook 'anaconda-mode)
+(eval-after-load 'python
+  '(define-key python-mode-map "\C-xpb" 'python-nav-backward-block))
+(eval-after-load 'python
+  '(define-key python-mode-map "\C-xpl" 'python-nav-backward-up-list))
+(eval-after-load 'python
+  '(define-key python-mode-map "\C-xpf" 'python-nav-forward-block))
+(eval-after-load 'python
+  '(define-key python-mode-map "\C-xpm" 'python-mark-defun))
+(eval-after-load 'python
+  '(define-key python-mode-map "\C-xpm" 'python-mark-defun))
+
+(eval-after-load 'python
+  '(define-key python-mode-map "\M-i" 'anaconda-mode-complete))
+
 
 ;; C++ IDE setup. Guide: https://tuhdo.github.io/c-ide.html
 ;; Helm guide: https://tuhdo.github.io/helm-intro.html
@@ -210,3 +231,10 @@
       (kill-new filename)
       (message "Copied buffer file name '%s' to the clipboard." filename))))
 
+;; Write backups to ~/.emacs.d/backup/
+(setq backup-directory-alist '(("." . "/home/vkocheganov/.emacs.d/backup"))
+      backup-by-copying      t  ; Don't de-link hard links
+      version-control        t  ; Use version numbers on backups
+      delete-old-versions    t  ; Automatically delete excess backups:
+      kept-new-versions      20 ; how many of the newest versions to keep
+      kept-old-versions      5) ; and how many of the old
