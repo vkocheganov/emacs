@@ -1,51 +1,37 @@
-;; Disable startup-screen
-;(setq inhibit-startup-screen 1)
-;; Whitespaces instead of TABS. Always
+;;;;;;;;;; Whitespaces instead of TABS. Always ;;;;;;;;;;
 (setq-default indent-tabs-mode nil)
-;; Show column number (along with line number)
-(column-number-mode 1)
-;;(global-set-key "\C-s\C-n" `neotree-toggle)
 
-(require 'package)
-;; In case I'm on work machine, use https instead of http
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-(add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
-;; (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
-
-(package-initialize)
-
+;;;;;;;;;; Themes ;;;;;;;;;;
 ;;(load-theme 'northcode)
 (load-theme 'tango-dark)
 
-;;(global-set-key "\C-s\C-k" `kill-whole-line)
-;; Commands to deal with registers.
+;;;;;;;;;; Commands to deal with registers ;;;;;;;;;;
 ;; Use C-x r i to insert from register
 ;; Use C-x r s r to insert to register
 (global-set-key "\C-xra" `append-to-register)
 (global-set-key "\C-xrp" `prepend-to-register)
-;; Commands to switch windows in the same frame
-(global-set-key "\C-cb" 'windmove-left)
-(global-set-key "\C-cf" 'windmove-right)
-(global-set-key "\C-cp" 'windmove-up)
-(global-set-key "\C-cn" 'windmove-down)
+
+;;;;;;;;;; Commands to switch windows in the same frame   ;;;;;;;;;;
 (global-set-key "\C-xp" (lambda () (interactive) (other-window -1)))
-;; For proper processing of colors.
+
+;;;;;;;;;; For proper processing of shell colors ;;;;;;;;;;
 (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 
+;;;;;;;;;; Unset useless "compose mail" key ;;;;;;;;;;
+;;;;;;;;;; Set it to be keys for magit usage
 (global-unset-key "\C-xm")
 (global-set-key (kbd "\C-xms") 'magit-status)
-;; To enable emacs-client programm for committing
-;; (server-start)
 
-;; Define and add my hook for all languages (C, C++, java, python etc)
+;;;;;;;;;; Define and add my hook for all languages (C, C++, java, python etc)
 (defun my-c-mode-common-hook ()
   (c-set-style "Stroustrup")
 
   ;; Show lines
   (linum-mode 1)
 
-  ;; Following command affects to c-toggle-auto-newline                                                   ;; That is automatically indent line after inserting
+  ;; Following command affects to c-toggle-auto-newline
+  ;; That is automatically indent line after inserting
   ;; one of {, }, :, #, ;, ,, <, >, /, *, (, and ).
   (c-toggle-electric-state 1)
 
@@ -63,7 +49,7 @@
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
 
-;; Set conscolors in magit on 142 machine
+;;;;;;;;;; Set conscolors in magit on 142 machine ;;;;;;;;;;
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
@@ -81,18 +67,17 @@
  '(neo-dir-link-face ((t (:foreground "deep sky blue" :slant normal :weight bold :height 120 :family "Fantasque Sans Mono"))))
  '(neo-file-link-face ((t (:foreground "White" :weight normal :height 120 :family "Fantasque Sans Mono")))))
 
-;; Make 'up' and 'down' keyboard keys do scrolling (instead of moving)
+;;;;;;;;;; Make 'up' and 'down' keyboard keys do scrolling (instead of moving) ;;;;;;;;;;
 (defun gcm-scroll-up ()
   (interactive)
   (scroll-down 1))
 (defun gcm-scroll-down ()
   (interactive)
   (scroll-up 1))
-
 (global-set-key [(down)] 'gcm-scroll-down)
 (global-set-key [(up)]   'gcm-scroll-up)
 
-
+;;;;;;;;;; Define function to creage GTAGS files ;;;;;;;;;;
 (defun create-tags (dir-name)
   "Create tags file."
   (interactive "DDirectory: ")
@@ -100,16 +85,14 @@
    (format "gtags %s" (directory-file-name dir-name)))
   )
 
-
-;; Save sessions history
+;;;;;;;;;; Save sessions history to ~/.emacs.d/savehist file ;;;;;;;;;;
 (setq savehist-save-minibuffer-history 1)
 (setq savehist-additional-variables
       '(kill-ring search-ring regexp-search-ring compile-history log-edit-comment-ring)
       savehist-file "~/.emacs.d/savehist")
 (savehist-mode t)
 
-
-;; Python settings
+;;;;;;;;;; Python settings ;;;;;;;;;;
 (setq python-command "/usr/bin/python3.4")
 (add-hook 'python-mode-hook 'anaconda-mode)
 (eval-after-load 'python
@@ -122,13 +105,13 @@
   '(define-key python-mode-map "\C-xpm" 'python-mark-defun))
 (eval-after-load 'python
   '(define-key python-mode-map "\C-xpm" 'python-mark-defun))
-
 (eval-after-load 'python
   '(define-key python-mode-map "\M-i" 'anaconda-mode-complete))
 
-
-;; C++ IDE setup. Guide: https://tuhdo.github.io/c-ide.html
-;; Helm guide: https://tuhdo.github.io/helm-intro.html
+;;;;;;;;;; C++ IDE setup. Guide: https://tuhdo.github.io/c-ide.html ;;;;;;;;;;
+;;;;;;;;;; Helm guide: https://tuhdo.github.io/helm-intro.html ;;;;;;;;;;
+(package-initialize)  ;; Important line for helm-gtags to be found. It initializes some installed packages (which cannot be initialized with their default auto-loaders)
+(require 'helm-gtags)
 (setq
  helm-gtags-ignore-case t
  helm-gtags-auto-update t
@@ -137,14 +120,13 @@
  helm-gtags-prefix-key "\C-cg"
  helm-gtags-suggested-key-mapping t
  )
-(require 'helm-gtags)
-;; Enable helm-gtags-mode
+
+;;;;;;;;;; Enable helm-gtags-mode ;;;;;;;;;;
 (add-hook 'dired-mode-hook 'helm-gtags-mode)
 (add-hook 'eshell-mode-hook 'helm-gtags-mode)
 (add-hook 'c-mode-hook 'helm-gtags-mode)
 (add-hook 'c++-mode-hook 'helm-gtags-mode)
 (add-hook 'asm-mode-hook 'helm-gtags-mode)
-
 (define-key helm-gtags-mode-map (kbd "C-c g a") 'helm-gtags-tags-in-this-function)
 (define-key helm-gtags-mode-map (kbd "C-j") 'helm-gtags-select)
 (define-key helm-gtags-mode-map (kbd "M-.") 'helm-gtags-dwim)
@@ -155,23 +137,68 @@
 (define-key helm-gtags-mode-map (kbd "C-c C-s") 'sr-speedbar-toggle)
 (global-set-key "\C-c\C-s" 'sr-speedbar-toggle)
 
-(put 'dired-find-alternate-file 'disabled nil)
-
-(load-file '"~/.emacs.d/init.el")
+;;;;;;;;;; Speedbar customization ;;;;;;;;;;
 (setq speedbar-show-unknown-files t)
 (setq sr-speedbar-right-side nil)
 (setq sr-speedbar-skip-other-window-p t)
 
-
-
-
-
+;;;;;;;;;; Lua customization ;;;;;;;;;;
 (defun my-lua-mode-hook ()
   (setq lua-indent-level 4)
   )
 (add-hook 'lua-mode-hook 'my-lua-mode-hook)
 
+;;;;;;;;;; Define usefull command ;;;;;;;;;;
+(defun copy-file-name ()
+  "Copy the current buffer file name to the clipboard."
+  (interactive)
+  (let ((filename (if (equal major-mode 'dired-mode)
+                      default-directory
+                    (buffer-file-name))))
+    (when filename
+      (kill-new filename)
+      (message "Copied buffer file name '%s' to the clipboard." filename))))
 
+;;;;;;;;;; Write backups to ~/.emacs.d/backup/ ;;;;;;;;;; 
+(setq backup-directory-alist '(("." . "/home/vkocheganov/.emacs.d/backup"))
+      backup-by-copying      t  ; Don't de-link hard links
+      version-control        t  ; Use version numbers on backups
+      delete-old-versions    t  ; Automatically delete excess backups:
+      kept-new-versions      20 ; how many of the newest versions to keep
+      kept-old-versions      5) ; and how many of the old
+
+
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   (quote
+    (xcscope use-package reverse-im python neotree mini-header-line markdown-mode magit luarocks lua-mode helm-gtags flymd eimp csv-mode clang-format auto-complete-nxml auto-complete-exuberant-ctags auto-complete-c-headers anaconda-mode ac-c-headers))))
+(put 'narrow-to-region 'disabled nil)
+
+
+
+;;;;;;;;;; In case I'm on work machine, use https instead of http ;;;;;;;;;;
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+(add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
+;; (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
+
+
+
+
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;; Aux ;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+
+;;;;;;;;;; Mystery line
+;; (put 'dired-find-alternate-file 'disabled nil)
 
 ;; (require 'helm-config)
 ;; (load "~/.emacs.d/lua2-mode.el")
@@ -193,7 +220,7 @@
 
 
 ;;
-;; To get colorized output from shell-mode
+;;;;;;;;;; To get colorized output from shell-mode ;;;;;;;;;;
 ;;
 ;; (require 'ansi-color)
 ;; (defun ansi-color-apply-on-buffer ()
@@ -221,20 +248,29 @@
 ;;   (shell (get-buffer-create "my-shell-buf"))
 ;;   (process-send-string (get-buffer-process "my-shell-buf") (concat cmd "\n")))
 ;; (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
-(defun copy-file-name ()
-  "Copy the current buffer file name to the clipboard."
-  (interactive)
-  (let ((filename (if (equal major-mode 'dired-mode)
-                      default-directory
-                    (buffer-file-name))))
-    (when filename
-      (kill-new filename)
-      (message "Copied buffer file name '%s' to the clipboard." filename))))
 
-;; Write backups to ~/.emacs.d/backup/
-(setq backup-directory-alist '(("." . "/home/vkocheganov/.emacs.d/backup"))
-      backup-by-copying      t  ; Don't de-link hard links
-      version-control        t  ; Use version numbers on backups
-      delete-old-versions    t  ; Automatically delete excess backups:
-      kept-new-versions      20 ; how many of the newest versions to keep
-      kept-old-versions      5) ; and how many of the old
+
+
+;; (load-file '"~/.emacs.d/init.el")
+
+
+;;;;;;;;;; Disable startup-screen ;;;;;;;;;;
+;(setq inhibit-startup-screen 1)
+
+;;;;;;;;;; Show column number (along with line number) ;;;;;;;;;;
+;;(column-number-mode 1)
+
+;;;;;;;;;; Enable filebrowser on the left ;;;;;;;;;;
+;;(global-set-key "\C-s\C-n" `neotree-toggle)
+
+
+;; (global-set-key "\C-cb" 'windmove-left)
+;; (global-set-key "\C-cf" 'windmove-right)
+;; (global-set-key "\C-cp" 'windmove-up)
+;; (global-set-key "\C-cn" 'windmove-down)
+
+
+
+;;;;;;;;;; To enable emacs-client programm for committing ;;;;;;;;;;
+;; (server-start)
+
