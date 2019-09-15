@@ -1,6 +1,8 @@
 ;;;;;;;;;; Add additional package sources  ;;;;;;;;;;
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 
+;;;;;;;;;; To enable emacs-client programm for committing ;;;;;;;;;;
+(unless (server-running) (server-start))
 
 ;;;;;;;;;; Whitespaces instead of TABS. Always ;;;;;;;;;;
 (setq-default indent-tabs-mode nil)
@@ -276,6 +278,4 @@
 
 
 
-;;;;;;;;;; To enable emacs-client programm for committing ;;;;;;;;;;
-;; (server-start)
 
