@@ -1,3 +1,7 @@
+;;;;;;;;;; Add additional package sources  ;;;;;;;;;;
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+
+
 ;;;;;;;;;; Whitespaces instead of TABS. Always ;;;;;;;;;;
 (setq-default indent-tabs-mode nil)
 
@@ -110,6 +114,7 @@
 
 ;;;;;;;;;; C++ IDE setup. Guide: https://tuhdo.github.io/c-ide.html ;;;;;;;;;;
 ;;;;;;;;;; Helm guide: https://tuhdo.github.io/helm-intro.html ;;;;;;;;;;
+;;;;;;;;;; Download helm-gtags: https://github.com/syohex/emacs-helm-gtags 
 (package-initialize)  ;; Important line for helm-gtags to be found. It initializes some installed packages (which cannot be initialized with their default auto-loaders)
 (require 'helm-gtags)
 (setq
@@ -180,12 +185,12 @@
 
 
 
+
 ;;;;;;;;;; In case I'm on work machine, use https instead of http ;;;;;;;;;;
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
 ;; (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
-
 
 
 
