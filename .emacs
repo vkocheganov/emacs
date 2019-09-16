@@ -1,3 +1,11 @@
+;;;;;;;;;; Make things faster (basics from https://sites.google.com/site/steveyegge2/effective-emacs) ;;;;;;;;;;
+(global-set-key "\C-x\C-m" 'execute-extended-command)
+(global-set-key "\C-w" 'backward-kill-word)
+(global-set-key "\C-x\C-k" 'kill-region)
+(if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+(if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
+
 ;;;;;;;;;; Whitespaces instead of TABS. Always ;;;;;;;;;;
 (setq-default indent-tabs-mode nil)
 
@@ -22,50 +30,6 @@
 ;;;;;;;;;; Set it to be keys for magit usage
 (global-unset-key "\C-xm")
 (global-set-key (kbd "\C-xms") 'magit-status)
-
-;;;;;;;;;; Define and add my hook for all languages (C, C++, java, python etc)
-(defun my-c-mode-common-hook ()
-  (c-set-style "Stroustrup")
-
-  ;; Show lines
-  (linum-mode 1)
-
-  ;; Following command affects to c-toggle-auto-newline
-  ;; That is automatically indent line after inserting
-  ;; one of {, }, :, #, ;, ,, <, >, /, *, (, and ).
-  (c-toggle-electric-state 1)
-
-  ;; Indent size
-  (setq c-basic-offset 4)
-
-  ;; Enable autocomplition mode
-  ;; (auto-complete-mode 1)
-
-  ;; Do not insert new line after ';' or ','
-  (setq c-hanging-semi&comma-criteria nil)
-
-  (setq comment-start "//"  comment-end   "")
-  )
-(add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
-
-
-;;;;;;;;;; Set conscolors in magit on 142 machine ;;;;;;;;;;
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(cursor ((t (:background "gold" :foreground "#151718"))))
- '(magit-diff-added ((((type tty)) (:foreground "green"))))
- '(magit-diff-added-highlight ((((type tty)) (:foreground "LimeGreen"))))
- '(magit-diff-context-highlight ((((type tty)) (:foreground "default"))))
- '(magit-diff-file-heading ((((type tty)) nil)))
- '(magit-diff-removed ((((type tty)) (:foreground "red"))))
- '(magit-diff-removed-highlight ((((type tty)) (:foreground "IndianRed"))))
- '(magit-section-highlight ((((type tty)) (:background "dim gray"))))
- '(mode-line ((t (:background "black" :foreground "#4499FF"))))
- '(neo-dir-link-face ((t (:foreground "deep sky blue" :slant normal :weight bold :height 120 :family "Fantasque Sans Mono"))))
- '(neo-file-link-face ((t (:foreground "White" :weight normal :height 120 :family "Fantasque Sans Mono")))))
 
 ;;;;;;;;;; Make 'up' and 'down' keyboard keys do scrolling (instead of moving) ;;;;;;;;;;
 (defun gcm-scroll-up ()
@@ -110,6 +74,27 @@
 
 ;;;;;;;;;; C++ IDE setup. Guide: https://tuhdo.github.io/c-ide.html ;;;;;;;;;;
 ;;;;;;;;;; Helm guide: https://tuhdo.github.io/helm-intro.html ;;;;;;;;;;
+
+;;;;;;;;;; Define and add my hook for all languages (C, C++, java, python etc)
+(defun my-c-mode-common-hook ()
+  (c-set-style "Stroustrup")
+  ;; Show lines
+  (linum-mode 1)
+  ;; Following command affects to c-toggle-auto-newline
+  ;; That is automatically indent line after inserting
+  ;; one of {, }, :, #, ;, ,, <, >, /, *, (, and ).
+  (c-toggle-electric-state 1)
+  ;; Indent size
+  (setq c-basic-offset 4)
+  ;; Enable autocomplition mode
+  ;; (auto-complete-mode 1)
+  ;; Do not insert new line after ';' or ','
+  (setq c-hanging-semi&comma-criteria nil)
+  (setq comment-start "//"  comment-end   "")
+  )
+(add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+
+
 (package-initialize)  ;; Important line for helm-gtags to be found. It initializes some installed packages (which cannot be initialized with their default auto-loaders)
 (require 'helm-gtags)
 (setq
@@ -273,4 +258,26 @@
 
 ;;;;;;;;;; To enable emacs-client programm for committing ;;;;;;;;;;
 ;; (server-start)
+
+
+
+
+
+;; ;;;;;;;;;; Set conscolors in magit on 142 machine ;;;;;;;;;;
+;; (custom-set-faces
+;;  ;; custom-set-faces was added by Custom.
+;;  ;; If you edit it by hand, you could mess it up, so be careful.
+;;  ;; Your init file should contain only one such instance.
+;;  ;; If there is more than one, they won't work right.
+;;  '(cursor ((t (:background "gold" :foreground "#151718"))))
+;;  '(magit-diff-added ((((type tty)) (:foreground "green"))))
+;;  '(magit-diff-added-highlight ((((type tty)) (:foreground "LimeGreen"))))
+;;  '(magit-diff-context-highlight ((((type tty)) (:foreground "default"))))
+;;  '(magit-diff-file-heading ((((type tty)) nil)))
+;;  '(magit-diff-removed ((((type tty)) (:foreground "red"))))
+;;  '(magit-diff-removed-highlight ((((type tty)) (:foreground "IndianRed"))))
+;;  '(magit-section-highlight ((((type tty)) (:background "dim gray"))))
+;;  '(mode-line ((t (:background "black" :foreground "#4499FF"))))
+;;  '(neo-dir-link-face ((t (:foreground "deep sky blue" :slant normal :weight bold :height 120 :family "Fantasque Sans Mono"))))
+;;  '(neo-file-link-face ((t (:foreground "White" :weight normal :height 120 :family "Fantasque Sans Mono")))))
 
