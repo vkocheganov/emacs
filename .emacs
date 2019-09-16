@@ -1,3 +1,10 @@
+;;;;;;;;;; Add additional package sources  ;;;;;;;;;;
+(add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
+
+;;;;;;;;;; To enable emacs-client programm for committing ;;;;;;;;;;
+(require 'server)
+(unless (server-running-p) (server-start))
+
 ;;;;;;;;;; Make things faster (basics from https://sites.google.com/site/steveyegge2/effective-emacs) ;;;;;;;;;;
 (global-set-key "\C-x\C-m" 'execute-extended-command)
 (global-set-key "\C-w" 'backward-kill-word)
@@ -74,8 +81,8 @@
 
 ;;;;;;;;;; C++ IDE setup. Guide: https://tuhdo.github.io/c-ide.html ;;;;;;;;;;
 ;;;;;;;;;; Helm guide: https://tuhdo.github.io/helm-intro.html ;;;;;;;;;;
-
-;;;;;;;;;; Define and add my hook for all languages (C, C++, java, python etc)
+;;;;;;;;;; Download helm-gtags: https://github.com/syohex/emacs-helm-gtags 
+(require 'helm-gtags)
 (defun my-c-mode-common-hook ()
   (c-set-style "Stroustrup")
   ;; Show lines
@@ -95,8 +102,7 @@
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
 
-(package-initialize)  ;; Important line for helm-gtags to be found. It initializes some installed packages (which cannot be initialized with their default auto-loaders)
-(require 'helm-gtags)
+(package-initialize)  ;; Important line for helm-gtags to be found. It initializes some installed packages (which cannot be initialized with their default auto-(require 'helm-gtags)
 (setq
  helm-gtags-ignore-case t
  helm-gtags-auto-update t
@@ -165,12 +171,12 @@
 
 
 
+
 ;;;;;;;;;; In case I'm on work machine, use https instead of http ;;;;;;;;;;
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
 ;; (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
-
 
 
 
@@ -256,8 +262,6 @@
 
 
 
-;;;;;;;;;; To enable emacs-client programm for committing ;;;;;;;;;;
-;; (server-start)
 
 
 
