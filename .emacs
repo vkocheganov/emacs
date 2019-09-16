@@ -1,3 +1,7 @@
+;;;;;;;;;; ************************************************
+;;;;;;;;;; ******** General section ********* ;;;;;;;;;;
+;;;;;;;;;; ************************************************
+
 ;;;;;;;;;; Add additional package sources  ;;;;;;;;;;
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 
@@ -5,10 +9,7 @@
 (require 'server)
 (unless (server-running-p) (server-start))
 
-;;;;;;;;;; Make things faster (basics from https://sites.google.com/site/steveyegge2/effective-emacs) ;;;;;;;;;;
-(global-set-key "\C-x\C-m" 'execute-extended-command)
-(global-set-key "\C-w" 'backward-kill-word)
-(global-set-key "\C-x\C-k" 'kill-region)
+;;;;;;;;;; Remove unnecessary windows ;;;;;;;;;;
 (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
 (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
@@ -20,23 +21,19 @@
 ;;(load-theme 'northcode)
 (load-theme 'tango-dark)
 
+;;;;;;;;;; Make things faster (basics from https://sites.google.com/site/steveyegge2/effective-emacs) ;;;;;;;;;;
+(global-set-key "\C-x\C-m" 'execute-extended-command)
+(global-set-key "\C-w" 'backward-kill-word)
+(global-set-key "\C-x\C-k" 'kill-region)
+
 ;;;;;;;;;; Commands to deal with registers ;;;;;;;;;;
-;; Use C-x r i to insert from register
-;; Use C-x r s r to insert to register
+;; Use C-x r i to insert FROM register
+;; Use C-x r s r to insert TO register
 (global-set-key "\C-xra" `append-to-register)
 (global-set-key "\C-xrp" `prepend-to-register)
 
 ;;;;;;;;;; Commands to switch windows in the same frame   ;;;;;;;;;;
 (global-set-key "\C-xp" (lambda () (interactive) (other-window -1)))
-
-;;;;;;;;;; For proper processing of shell colors ;;;;;;;;;;
-(autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
-(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
-
-;;;;;;;;;; Unset useless "compose mail" key ;;;;;;;;;;
-;;;;;;;;;; Set it to be keys for magit usage
-(global-unset-key "\C-xm")
-(global-set-key (kbd "\C-xms") 'magit-status)
 
 ;;;;;;;;;; Make 'up' and 'down' keyboard keys do scrolling (instead of moving) ;;;;;;;;;;
 (defun gcm-scroll-up ()
@@ -48,14 +45,6 @@
 (global-set-key [(down)] 'gcm-scroll-down)
 (global-set-key [(up)]   'gcm-scroll-up)
 
-;;;;;;;;;; Define function to creage GTAGS files ;;;;;;;;;;
-(defun create-tags (dir-name)
-  "Create tags file."
-  (interactive "DDirectory: ")
-  (shell-command
-   (format "gtags %s" (directory-file-name dir-name)))
-  )
-
 ;;;;;;;;;; Save sessions history to ~/.emacs.d/savehist file ;;;;;;;;;;
 (setq savehist-save-minibuffer-history 1)
 (setq savehist-additional-variables
@@ -63,7 +52,31 @@
       savehist-file "~/.emacs.d/savehist")
 (savehist-mode t)
 
-;;;;;;;;;; Python settings ;;;;;;;;;;
+;;;;;;;;;; Define usefull command ;;;;;;;;;;
+(defun copy-file-name ()
+  "Copy the current buffer file name to the clipboard."
+  (interactive)
+  (let ((filename (if (equal major-mode 'dired-mode)
+                      default-directory
+                    (buffer-file-name))))
+    (when filename
+      (kill-new filename)
+      (message "Copied buffer file name '%s' to the clipboard." filename))))
+
+;;;;;;;;;; Write backups to ~/.emacs.d/backup/ ;;;;;;;;;;
+(setq backup-directory-alist '(("." . "/home/vkocheganov/.emacs.d/backup"))
+      backup-by-copying      t  ; Don't de-link hard links
+      version-control        t  ; Use version numbers on backups
+      delete-old-versions    t  ; Automatically delete excess backups:
+      kept-new-versions      20 ; how many of the newest versions to keep
+      kept-old-versions      5) ; and how many of the old
+
+
+
+;;;;;;;;;; ************************************************
+;;;;;;;;;; ******** Python settings ********* ;;;;;;;;;;
+;;;;;;;;;; ************************************************
+
 (setq python-command "/usr/bin/python3.4")
 (add-hook 'python-mode-hook 'anaconda-mode)
 (eval-after-load 'python
@@ -79,7 +92,19 @@
 (eval-after-load 'python
   '(define-key python-mode-map "\M-i" 'anaconda-mode-complete))
 
-;;;;;;;;;; C++ IDE setup. Guide: https://tuhdo.github.io/c-ide.html ;;;;;;;;;;
+;;;;;;;;;; ************************************************
+;;;;;;;;;; ******** C++ IDE setup ********* ;;;;;;;;;;
+;;;;;;;;;; ******** Guide: https://tuhdo.github.io/c-ide.html ********* ;;;;;;;;;;
+;;;;;;;;;; ************************************************
+
+;;;;;;;;;; Define function to create GTAGS files ;;;;;;;;;;
+(defun create-tags (dir-name)
+  "Create tags file."
+  (interactive "DDirectory: ")
+  (shell-command
+   (format "gtags %s" (directory-file-name dir-name)))
+  )
+
 ;;;;;;;;;; Helm guide: https://tuhdo.github.io/helm-intro.html ;;;;;;;;;;
 ;;;;;;;;;; Download helm-gtags: https://github.com/syohex/emacs-helm-gtags 
 (require 'helm-gtags)
@@ -100,7 +125,6 @@
   (setq comment-start "//"  comment-end   "")
   )
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
-
 
 (package-initialize)  ;; Important line for helm-gtags to be found. It initializes some installed packages (which cannot be initialized with their default auto-(require 'helm-gtags)
 (setq
@@ -133,30 +157,43 @@
 (setq sr-speedbar-right-side nil)
 (setq sr-speedbar-skip-other-window-p t)
 
-;;;;;;;;;; Lua customization ;;;;;;;;;;
+
+
+;;;;;;;;;; ************************************************
+;;;;;;;;;; ******** LUA customization  ********* ;;;;;;;;;;
+;;;;;;;;;; ************************************************
+
 (defun my-lua-mode-hook ()
   (setq lua-indent-level 4)
   )
 (add-hook 'lua-mode-hook 'my-lua-mode-hook)
 
-;;;;;;;;;; Define usefull command ;;;;;;;;;;
-(defun copy-file-name ()
-  "Copy the current buffer file name to the clipboard."
-  (interactive)
-  (let ((filename (if (equal major-mode 'dired-mode)
-                      default-directory
-                    (buffer-file-name))))
-    (when filename
-      (kill-new filename)
-      (message "Copied buffer file name '%s' to the clipboard." filename))))
 
-;;;;;;;;;; Write backups to ~/.emacs.d/backup/ ;;;;;;;;;; 
-(setq backup-directory-alist '(("." . "/home/vkocheganov/.emacs.d/backup"))
-      backup-by-copying      t  ; Don't de-link hard links
-      version-control        t  ; Use version numbers on backups
-      delete-old-versions    t  ; Automatically delete excess backups:
-      kept-new-versions      20 ; how many of the newest versions to keep
-      kept-old-versions      5) ; and how many of the old
+
+;;;;;;;;;; ************************************************
+;;;;;;;;;; ******** Shell customization  ********* ;;;;;;;;;;
+;;;;;;;;;; ************************************************
+
+;;;;;;;;;; For proper processing of shell colors ;;;;;;;;;;
+(autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
+(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+
+
+
+;;;;;;;;;; ************************************************
+;;;;;;;;;; ******** Other customization  ********* ;;;;;;;;;;
+;;;;;;;;;; ************************************************
+
+;;;;;;;;;; In case I'm on work machine, use https instead of http ;;;;;;;;;;
+(require 'package)
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+(add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
+;; (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
+
+;;;;;;;;;; Unset useless "compose mail" key ;;;;;;;;;;
+;;;;;;;;;; Set it to be keys for magit usage
+(global-unset-key "\C-xm")
+(global-set-key (kbd "\C-xms") 'magit-status)
 
 
 (custom-set-variables
@@ -172,20 +209,9 @@
 
 
 
-;;;;;;;;;; In case I'm on work machine, use https instead of http ;;;;;;;;;;
-(require 'package)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-(add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
-;; (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
-
-
-
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;; Aux ;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
+;;;;;;;;;; ************************************************
+;;;;;;;;;; ******** AUX  ********* ;;;;;;;;;;
+;;;;;;;;;; ************************************************
 
 
 ;;;;;;;;;; Mystery line
