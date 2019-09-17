@@ -52,19 +52,21 @@
  gdb-show-main t
  )
 
-;;;;;;;;;; Company monde ;;;;;;;;;;
+;;;;;;;;;; Company mode ;;;;;;;;;;
 (use-package company
   :init
   (global-company-mode 1)
   (delete 'company-semantic company-backends))
-;; (define-key c-mode-map  [(control tab)] 'company-complete)
-;; (define-key c++-mode-map  [(control tab)] 'company-complete)
+(define-key c-mode-map  [(tab)] 'company-complete)
+(define-key c++-mode-map  [(tab)] 'company-complete)
+(add-hook 'after-init-hook 'global-company-mode)
 
 ;;;;;;;;;; Projejctile project management tool ;;;;;;;;;;
 (use-package projectile
   :init
   (projectile-global-mode)
-  (setq projectile-enable-caching t))
+  (setq projectile-enable-caching t)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
 
   ; automatically indent when press RET
 
