@@ -35,3 +35,6 @@
       (define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history))))
 
 (provide 'setup-helm-gtags)
+
+
+;;(define-key helm-gtags-mode-map (kbd "C-c C-s") 'sr-speedbar-toggle)

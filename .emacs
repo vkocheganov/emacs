@@ -2,6 +2,10 @@
 ;;;;;;;;;; ******** General section ********* ;;;;;;;;;;
 ;;;;;;;;;; ************************************************
 
+
+;;;;;;;;;; Maximize screen on starup ;;;;;;;;;;
+(add-to-list 'default-frame-alist '(fullscreen . maximized))
+
 ;;;;;;;;;; Add additional package sources  ;;;;;;;;;;
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
@@ -26,68 +30,6 @@
 ;;;;;;;;;; To enable emacs-client programm for committing ;;;;;;;;;;
 (use-package server)
 (unless (server-running-p) (server-start))
-
-;;;;;;;;;; Remove unnecessary windows ;;;;;;;;;;
-(if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
-(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
-(if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
-
-;;;;;;;;;; Whitespaces instead of TABS. Always ;;;;;;;;;;
-(setq-default indent-tabs-mode nil)
-
-;;;;;;;;;; Themes ;;;;;;;;;;
-;;(load-theme 'northcode)
-(load-theme 'tango-dark)
-
-;;;;;;;;;; Make things faster (basics from https://sites.google.com/site/steveyegge2/effective-emacs) ;;;;;;;;;;
-(global-set-key "\C-x\C-m" 'execute-extended-command)
-(global-set-key "\C-w" 'backward-kill-word)
-(global-set-key "\C-x\C-k" 'kill-region)
-
-;;;;;;;;;; Commands to deal with registers ;;;;;;;;;;
-;; Use C-x r i to insert FROM register
-;; Use C-x r s r to insert TO register
-(global-set-key "\C-xra" `append-to-register)
-(global-set-key "\C-xrp" `prepend-to-register)
-
-;;;;;;;;;; Commands to switch windows in the same frame   ;;;;;;;;;;
-(global-set-key "\C-xp" (lambda () (interactive) (other-window -1)))
-
-;;;;;;;;;; Make 'up' and 'down' keyboard keys do scrolling (instead of moving) ;;;;;;;;;;
-(defun gcm-scroll-up ()
-  (interactive)
-  (scroll-down 1))
-(defun gcm-scroll-down ()
-  (interactive)
-  (scroll-up 1))
-(global-set-key [(down)] 'gcm-scroll-down)
-(global-set-key [(up)]   'gcm-scroll-up)
-
-;;;;;;;;;; Save sessions history to ~/.emacs.d/savehist file ;;;;;;;;;;
-(setq savehist-save-minibuffer-history 1)
-(setq savehist-additional-variables
-      '(kill-ring search-ring regexp-search-ring compile-history log-edit-comment-ring)
-      savehist-file "~/.emacs.d/savehist")
-(savehist-mode t)
-
-;;;;;;;;;; Define usefull command ;;;;;;;;;;
-(defun copy-file-name ()
-  "Copy the current buffer file name to the clipboard."
-  (interactive)
-  (let ((filename (if (equal major-mode 'dired-mode)
-                      default-directory
-                    (buffer-file-name))))
-    (when filename
-      (kill-new filename)
-      (message "Copied buffer file name '%s' to the clipboard." filename))))
-
-;;;;;;;;;; Write backups to ~/.emacs.d/backup/ ;;;;;;;;;;
-(setq backup-directory-alist '(("." . "/home/vkocheganov/.emacs.d/backup"))
-      backup-by-copying      t  ; Don't de-link hard links
-      version-control        t  ; Use version numbers on backups
-      delete-old-versions    t  ; Automatically delete excess backups:
-      kept-new-versions      20 ; how many of the newest versions to keep
-      kept-old-versions      5) ; and how many of the old
 
 
 
@@ -125,7 +67,6 @@
 
 ;;;;;;;;;; Helm guide: https://tuhdo.github.io/helm-intro.html ;;;;;;;;;;
 ;;;;;;;;;; Download helm-gtags: https://github.com/syohex/emacs-helm-gtags
-(use-package helm-gtags)
 (defun my-c-mode-common-hook ()
   (c-set-style "Stroustrup")
   ;; Show lines
@@ -144,32 +85,11 @@
   )
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
-(setq
- helm-gtags-ignore-case t
- helm-gtags-auto-update t
- helm-gtags-use-input-at-cursor t
- helm-gtags-pulse-at-cursor t
- helm-gtags-prefix-key "\C-cg"
- helm-gtags-suggested-key-mapping t
- )
 
-;;;;;;;;;; Enable helm-gtags-mode ;;;;;;;;;;
-(add-hook 'dired-mode-hook 'helm-gtags-mode)
-(add-hook 'eshell-mode-hook 'helm-gtags-mode)
-(add-hook 'c-mode-hook 'helm-gtags-mode)
-(add-hook 'c++-mode-hook 'helm-gtags-mode)
-(add-hook 'asm-mode-hook 'helm-gtags-mode)
-(define-key helm-gtags-mode-map (kbd "C-c g a") 'helm-gtags-tags-in-this-function)
-(define-key helm-gtags-mode-map (kbd "C-j") 'helm-gtags-select)
-(define-key helm-gtags-mode-map (kbd "M-.") 'helm-gtags-dwim)
-(define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)
-(define-key helm-gtags-mode-map (kbd "C-c <") 'helm-gtags-previous-history)
-(define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history)
-(define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history)
-(define-key helm-gtags-mode-map (kbd "C-c C-s") 'sr-speedbar-toggle)
-(global-set-key "\C-c\C-s" 'sr-speedbar-toggle)
 
 ;;;;;;;;;; Speedbar customization ;;;;;;;;;;
+(use-package sr-speedbar)
+(global-set-key "\C-c\C-s" 'sr-speedbar-toggle)
 (setq speedbar-show-unknown-files t)
 (setq sr-speedbar-right-side nil)
 (setq sr-speedbar-skip-other-window-p t)
@@ -208,6 +128,18 @@
 (global-set-key (kbd "\C-xms") 'magit-status)
 
 
+(add-to-list 'load-path "~/.emacs.d/custom")
+
+(require 'setup-general)
+(require 'setup-helm)
+(require 'setup-helm-gtags)
+;; (if (version< emacs-version "24.4")
+;;     (require 'setup-ivy-counsel)
+;;   (require 'setup-helm)
+;;   (require 'setup-helm-gtags))
+;; (require 'setup-ggtags)
+(require 'setup-cedet)
+(require 'setup-editing)
 
 
 ;;;;;;;;;; ************************************************
@@ -312,3 +244,16 @@
 ;;  '(neo-dir-link-face ((t (:foreground "deep sky blue" :slant normal :weight bold :height 120 :family "Fantasque Sans Mono"))))
 ;;  '(neo-file-link-face ((t (:foreground "White" :weight normal :height 120 :family "Fantasque Sans Mono")))))
 
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(package-selected-packages
+   '(sr-speedbar projectile company use-package magit helm-gtags)))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
