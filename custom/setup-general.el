@@ -21,6 +21,13 @@
 ;;;;;;;;;; Whitespaces instead of TABS. Always ;;;;;;;;;;
 (setq-default indent-tabs-mode nil)
 
+;;;;;;;;;; Show parenthesis ;;;;;;;;;;
+(show-paren-mode t)
+;;;;;;;;;; and highlight them ;;;;;;;;;;
+;; (setq show-paren-style 'expression)
+(electric-indent-mode nil)
+(electric-pair-mode t)
+
 ;;;;;;;;;; Make things faster (basics from https://sites.google.com/site/steveyegge2/effective-emacs) ;;;;;;;;;;
 (global-set-key "\C-x\C-m" 'execute-extended-command)
 (global-set-key "\C-w" 'backward-kill-word)
@@ -57,8 +64,8 @@
   :init
   (global-company-mode 1)
   (delete 'company-semantic company-backends))
-(define-key c-mode-map  [(tab)] 'company-complete)
-(define-key c++-mode-map  [(tab)] 'company-complete)
+;; (define-key c-mode-map  [(tab)] 'company-complete)
+;; (define-key c++-mode-map  [(tab)] 'company-complete)
 (add-hook 'after-init-hook 'global-company-mode)
 
 ;;;;;;;;;; Projejctile project management tool ;;;;;;;;;;
