@@ -3,10 +3,28 @@
 ;;;;;;;;;; ************************************************
 
 ;;;;;;;;;; Add additional package sources  ;;;;;;;;;;
+(require 'package)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
 
+;;;;;;;;;; In case I'm on work machine, use https instead of http ;;;;;;;;;;
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+(add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
+(package-initialize) ;; Important line for helm-gtags to be found. It initializes some installed packages (which cannot be initialized with their default auto-(require 'helm-gtags)
+
+;;;;;;;;;; Load updates from these sources. Or 'use-package' will not be available  ;;;;;;;;;;
+(when (not package-archive-contents)
+  (package-refresh-contents))
+
+;;;;;;;;;; Install 'use-package'  ;;;;;;;;;;
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+
+;;;;;;;;;; Make all the packages be loaded with 'use-package' instruction  ;;;;;;;;;;
+(require 'use-package)
+(setq use-package-always-ensure t)
+
 ;;;;;;;;;; To enable emacs-client programm for committing ;;;;;;;;;;
-(require 'server)
+(use-package server)
 (unless (server-running-p) (server-start))
 
 ;;;;;;;;;; Remove unnecessary windows ;;;;;;;;;;
@@ -106,8 +124,8 @@
   )
 
 ;;;;;;;;;; Helm guide: https://tuhdo.github.io/helm-intro.html ;;;;;;;;;;
-;;;;;;;;;; Download helm-gtags: https://github.com/syohex/emacs-helm-gtags 
-(require 'helm-gtags)
+;;;;;;;;;; Download helm-gtags: https://github.com/syohex/emacs-helm-gtags
+(use-package helm-gtags)
 (defun my-c-mode-common-hook ()
   (c-set-style "Stroustrup")
   ;; Show lines
@@ -126,7 +144,6 @@
   )
 (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
 
-(package-initialize)  ;; Important line for helm-gtags to be found. It initializes some installed packages (which cannot be initialized with their default auto-(require 'helm-gtags)
 (setq
  helm-gtags-ignore-case t
  helm-gtags-auto-update t
@@ -184,27 +201,11 @@
 ;;;;;;;;;; ******** Other customization  ********* ;;;;;;;;;;
 ;;;;;;;;;; ************************************************
 
-;;;;;;;;;; In case I'm on work machine, use https instead of http ;;;;;;;;;;
-(require 'package)
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-(add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
-;; (add-to-list 'package-archives '("melpa-stable" . "http://stable.melpa.org/packages/"))
-
 ;;;;;;;;;; Unset useless "compose mail" key ;;;;;;;;;;
 ;;;;;;;;;; Set it to be keys for magit usage
+(use-package magit)
 (global-unset-key "\C-xm")
 (global-set-key (kbd "\C-xms") 'magit-status)
-
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(package-selected-packages
-   (quote
-    (xcscope use-package reverse-im python neotree mini-header-line markdown-mode magit luarocks lua-mode helm-gtags flymd eimp csv-mode clang-format auto-complete-nxml auto-complete-exuberant-ctags auto-complete-c-headers anaconda-mode ac-c-headers))))
-(put 'narrow-to-region 'disabled nil)
 
 
 
