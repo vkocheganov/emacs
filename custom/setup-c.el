@@ -4,8 +4,8 @@
   :init
   (global-company-mode 1)
   (delete 'company-semantic company-backends))
-(define-key c-mode-map  [(tab)] 'company-complete)
-(define-key c++-mode-map  [(tab)] 'company-complete)
+;; (define-key c-mode-map  [(tab)] 'company-complete)
+;; (define-key c++-mode-map  [(tab)] 'company-complete)
 (add-hook 'after-init-hook 'global-company-mode)
 
 
