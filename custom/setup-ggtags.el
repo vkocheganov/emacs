@@ -1,4 +1,4 @@
-(require 'ggtags)
+(use-package ggtags)
 
 (ggtags-mode 1)
 (add-hook 'c-mode-common-hook
@@ -17,6 +17,8 @@
   (define-key map (kbd "M-.") 'ggtags-find-tag-dwim)
   (define-key map (kbd "M-,") 'pop-tag-mark)
   (define-key map (kbd "C-c <") 'ggtags-prev-mark)
-  (define-key map (kbd "C-c >") 'ggtags-next-mark))
+  (define-key map (kbd "C-c >") 'ggtags-next-mark)
+  (define-key map (kbd "M-< ") 'beginning-of-buffer)
+  )
 
 (provide 'setup-ggtags)

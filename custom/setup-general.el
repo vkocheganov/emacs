@@ -59,15 +59,6 @@
  gdb-show-main t
  )
 
-;;;;;;;;;; Company mode ;;;;;;;;;;
-(use-package company
-  :init
-  (global-company-mode 1)
-  (delete 'company-semantic company-backends))
-;; (define-key c-mode-map  [(tab)] 'company-complete)
-;; (define-key c++-mode-map  [(tab)] 'company-complete)
-(add-hook 'after-init-hook 'global-company-mode)
-
 ;;;;;;;;;; Projejctile project management tool ;;;;;;;;;;
 (use-package projectile
   :init
@@ -81,9 +72,9 @@
 (global-set-key (kbd "C-c w") 'whitespace-mode)
 
 
-;;;;;;;;;; 
+;;;;;;;;;;
 ;;;;;;;;;; Functions definintions
-;;;;;;;;;; 
+;;;;;;;;;;
 
 ;;;;;;;;;; Make 'up' and 'down' keyboard keys do scrolling (instead of moving) ;;;;;;;;;;
 (defun gcm-scroll-up ()
@@ -120,7 +111,6 @@
       delete-old-versions    t  ; Automatically delete excess backups:
       kept-new-versions      20 ; how many of the newest versions to keep
       kept-old-versions      5) ; and how many of the old
-
 
 (provide 'setup-general)
 

@@ -71,6 +71,7 @@
     (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
 
     (global-set-key (kbd "M-x") 'helm-M-x)
+    (global-set-key (kbd "C-x C-m") 'helm-M-x)
     (global-set-key (kbd "M-y") 'helm-show-kill-ring)
     (global-set-key (kbd "C-x b") 'helm-buffers-list)
     (global-set-key (kbd "C-x C-f") 'helm-find-files)
