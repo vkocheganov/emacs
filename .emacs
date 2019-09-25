@@ -140,8 +140,9 @@
 ;;   (require 'setup-helm)
 ;;   (require 'setup-helm-gtags))
 ;; (require 'setup-ggtags)
-(require 'setup-ggtags)
-(require 'setup-cedet)
+;;(require 'setup-ggtags)
+
+;(require 'setup-cedet)
 (require 'setup-editing)
 (require 'setup-c)
 
@@ -254,7 +255,8 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(auto-complete-config auto-complete flycheck rtags cmake-ide posframe anaconda-mode anaconda sr-speedbar projectile company use-package magit helm-gtags)))
+   '(irony-server yasnippet-snippets yasippet-snippets auto-complete-config auto-complete flycheck rtags cmake-ide posframe anaconda-mode anaconda sr-speedbar projectile company use-package magit helm-gtags))
+ '(speedbar-show-unknown-files t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
