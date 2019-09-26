@@ -13,22 +13,27 @@
   (define-key company-active-map (kbd "C-n") #'company-select-next)
   (define-key company-active-map (kbd "C-p") #'company-select-previous))
 
-(use-package company-irony
-  :config
-  (add-to-list 'company-backends 'company-irony)
-  )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; for irony mode to work one needs to run 'irony-install-server'. Be sure to install clang + libclang-dev ;;      ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(unless (package-installed-p 'irony)
+  (package-install 'irony)
+  (shell-command (concat "echo " (shell-quote-argument (read-passwd "Password? "))
+                         " | sudo -S apt-get install --assume-yes clang libclang-dev"))
+  (call-interactively #'irony-install-server)
+  )
+
 (use-package irony
   :config
   (add-hook 'c-mode-hook 'irony-mode)
   (add-hook 'c++-mode-hook 'irony-mode)
   (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
-  (shell-command (concat "echo " (shell-quote-argument (read-passwd "Password? "))
-                         " | sudo -S apt-get install --assume-yes clang libclang-dev"))
-  (call-interactively #'irony-install-server)
+  )
+(use-package company-irony
+  :config
+  (add-to-list 'company-backends 'company-irony)
   )
 (with-eval-after-load 'company
   (add-hook 'c++-mode-hook 'company-mode)
@@ -40,9 +45,9 @@
 
 
 ;;;;;;;;;; Auto-complete c headers ;;;;;;;;;;
-;; (use-package company-c-headers
-;;   :init
-;;   (add-to-list 'company-backends 'company-c-headers))
+(use-package company-c-headers
+  :init
+  (add-to-list 'company-backends 'company-c-headers))
 
 ;;;;;;;;;; Hide/show blocks of code ;;;;;;;;;;
 ;;;;;;;;; C-c @ C-M-s show all
