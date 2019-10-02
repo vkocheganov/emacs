@@ -12,6 +12,7 @@
 ;; for more details
 
 (use-package rtags)
+(require 'rtags)
 (use-package cmake-ide)
 (cmake-ide-setup)
 (rtags-enable-standard-keybindings c-mode-base-map "\C-xr")
@@ -33,6 +34,13 @@
 ;; use rtags flycheck mode -- clang warnings shown inline
 (use-package flycheck-rtags)
 ;; c-mode-common-hook is also called by c++-mode
+
+(defun setup-flycheck-rtags ()
+  (interactive)
+  (flycheck-select-checker 'rtags)
+  ;; RTags creates more accurate overlays.
+  (setq-local flycheck-highlighting-mode nil)
+  (setq-local flycheck-check-syntax-automatically nil))
 (add-hook 'c-mode-common-hook #'setup-flycheck-rtags)
 
 

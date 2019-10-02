@@ -134,7 +134,6 @@
 
 (require 'setup-general)
 (require 'setup-helm)
-(require 'setup-rtags)
 ;; (require 'setup-helm-gtags)
 ;; (if (version< emacs-version "24.4")
 ;;     (require 'setup-ivy-counsel)
@@ -146,6 +145,7 @@
 ;(require 'setup-cedet)
 (require 'setup-editing)
 (require 'setup-c)
+(require 'setup-rtags)
 
 
 ;;;;;;;;;; ************************************************
