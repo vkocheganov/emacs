@@ -1,12 +1,59 @@
 ;;;;;;;;;; Company mode ;;;;;;;;;;
 ;;;;;;;;;; Auto completion ;;;;;;;;;;
+
+(defun my-irony-mode-hook ()
+  (define-key irony-mode-map [remap completion-at-point]
+    'irony-completion-at-point-async)
+  (define-key irony-mode-map [remap complete-symbol]
+    'irony-completion-at-point-async))
+
+
 (use-package company
+  :init
+;;  (global-company-mode 1)
+;;  (delete 'company-semantic company-backends)
   :config
   (setq company-idle-delay 0)
   (setq company-minimum-prefix-length 3)
-  :init
-  (global-company-mode 1)
-  (delete 'company-semantic company-backends))
+  (add-hook 'c-mode-common-hook 'company-mode)
+  (add-hook 'emacs-lisp-mode-hook 'company-mode)
+
+  (unless (package-installed-p 'irony)
+    (package-install 'irony)
+    (shell-command (concat "echo " (shell-quote-argument (read-passwd "Password? "))
+                           " | sudo -S apt-get install --assume-yes clang libclang-dev"))
+    (call-interactively #'irony-install-server)
+    )
+
+  (use-package irony
+    :config
+    (add-hook 'c-mode-common-hook 'irony-mode)
+    (add-hook 'irony-mode-hook 'my-irony-mode-hook)
+    (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+  ;;;;;;;;;; Auto-complete c headers ;;;;;;;;;;
+    (use-package company-irony-c-headers
+      :config
+      (add-to-list 'company-backends 'company-irony-c-headers)
+      )
+
+    (use-package company-irony
+      :config
+      (add-to-list 'company-backends 'company-irony)
+      )
+
+    (use-package flycheck-irony
+      :config
+      (eval-after-load 'flycheck '(add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
+      (add-hook 'c-mode-common-hook 'flycheck-mode)
+      )
+
+    (use-package irony-eldoc
+      :config
+      (add-hook 'irony-mode-hook #'irony-eldoc)
+      )
+    )
+  )
+
 (with-eval-after-load 'company
   (define-key company-active-map (kbd "M-p") nil)
   (define-key company-active-map (kbd "M-n") nil)
@@ -18,36 +65,22 @@
 ; for irony mode to work one needs to run 'irony-install-server'. Be sure to install clang + libclang-dev ;;      ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(unless (package-installed-p 'irony)
-  (package-install 'irony)
-  (shell-command (concat "echo " (shell-quote-argument (read-passwd "Password? "))
-                         " | sudo -S apt-get install --assume-yes clang libclang-dev"))
-  (call-interactively #'irony-install-server)
-  )
-
-(use-package irony
-  :config
-  (add-hook 'c-mode-hook 'irony-mode)
-  (add-hook 'c++-mode-hook 'irony-mode)
-  (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
-  )
-(use-package company-irony
-  :config
-  (add-to-list 'company-backends 'company-irony)
-  )
 (with-eval-after-load 'company
-  (add-hook 'c++-mode-hook 'company-mode)
-  (add-hook 'c-mode-hook 'company-mode)
+  (add-hook 'c-mode-common-hook 'company-mode)
+  ;; (add-to-list
+  ;;   'company-backends '(company-irony-c-headers company-irony))
   )
-;; (define-key c-mode-map  [(tab)] 'company-complete)
-;; (define-key c++-mode-map  [(tab)] 'company-complete)
+(add-hook 'c-mode-common-hook
+          (lambda ()
+            (define-key c-mode-base-map  [(tab)] 'company-indent-or-complete-common)
+            )
+          )
+
+
 ;;(add-hook 'after-init-hook 'global-company-mode)
 
 
-;;;;;;;;;; Auto-complete c headers ;;;;;;;;;;
-(use-package company-c-headers
-  :init
-  (add-to-list 'company-backends 'company-c-headers))
+
 
 ;;;;;;;;;; Hide/show blocks of code ;;;;;;;;;;
 ;;;;;;;;; C-c @ C-M-s show all
