@@ -154,7 +154,6 @@
 
 
 ;;;;;;;;;; Mystery line
-;; (put 'dired-find-alternate-file 'disabled nil)
 
 ;; (require 'helm-config)
 ;; (load "~/.emacs.d/lua2-mode.el")
@@ -256,7 +255,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(irony-server yasnippet-snippets yasippet-snippets auto-complete-config auto-complete flycheck rtags cmake-ide posframe anaconda-mode anaconda sr-speedbar projectile company use-package magit helm-gtags))
+   '(highlight-symbol irony-server yasnippet-snippets yasippet-snippets auto-complete-config auto-complete flycheck rtags cmake-ide posframe anaconda-mode anaconda sr-speedbar projectile company use-package magit helm-gtags))
  '(speedbar-show-unknown-files t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -264,3 +263,11 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+(put 'dired-find-alternate-file 'disabled nil)
+
+
+
+
+
+
+(global-set-key (kbd "<f6>") (lambda() (interactive)(find-file "/home/vkocheganov/Development/gerrit_sources/lpr/release/ubuntu_16.04_x64_gcc5.4.0/demo/")))

@@ -108,4 +108,25 @@
   (yas-reload-all))
 (yas-global-mode)
 
+
+;;;;;;;;;;;; Highlighting ;;;;;;;;;;;;
+(use-package auto-highlight-symbol)
+(add-hook 'c-mode-common-hook 'auto-highlight-symbol-mode)
+
+(use-package highlight-symbol)
+(global-set-key [(control f3)] 'highlight-symbol)
+(global-set-key [f3] 'highlight-symbol-next)
+(global-set-key [(shift f3)] 'highlight-symbol-prev)
+(global-set-key [(meta f3)] 'highlight-symbol-query-replace)
+
+
+
+(setq
+ ;; use gdb-many-windows by default
+ gdb-many-windows t
+
+ ;; Non-nil means display source file containing the main routine at startup
+ gdb-show-main t
+ )
+
 (provide 'setup-c)
