@@ -255,7 +255,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(highlight-symbol irony-server yasnippet-snippets yasippet-snippets auto-complete-config auto-complete flycheck rtags cmake-ide posframe anaconda-mode anaconda sr-speedbar projectile company use-package magit helm-gtags))
+   '(multiple-cursors vterm multi-term company-shell bash-completion highlight-symbol irony-server yasnippet-snippets yasippet-snippets auto-complete-config auto-complete flycheck rtags cmake-ide posframe anaconda-mode anaconda sr-speedbar projectile company use-package magit helm-gtags))
  '(speedbar-show-unknown-files t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -266,8 +266,41 @@
 (put 'dired-find-alternate-file 'disabled nil)
 
 
+;;(define-key dired-mode-map (kbd "<return>")   'dired-find-alternate-file)
+(define-key dired-mode-map (kbd "C-M-u")   'dired-up-directory)
+
+;; (global-set-key (kbd "<f6>") (lambda() (interactive)(insert "/home/vkocheganov/Development/gerrit_sources/lpr/release/ubuntu_16.04_x64_gcc5.4.0/demo/")))
+;; (global-set-key (kbd "<f6>") (lambda() (interactive)(insert "/media/vkocheganov/88EE8B94EE8B7968/Users/79051/Documents/")))
+
+(global-set-key (kbd "<f7>") (lambda() (interactive)(dired "/home/vkocheganov/mounted/")))
+(global-set-key "\M-\r" 'shell-resync-dirs)
+
+
+(defun htop ()
+  (interactive)
+  (if (get-buffer "*htop*")
+      (switch-to-buffer "*htop*")
+    (ansi-term "/bin/bash" "htop")
+    (comint-send-string "*htop*" "htop\n")))
+
+
+(use-package multi-term)
+(setq multi-term-program "/bin/bash")
+
+(define-key term-raw-map (kbd "C-c C-j") 'term-line-mode)
+
+
+
+(add-to-list 'load-path "/home/vkocheganov/thirdparty/emacs-libvterm/")
+(require 'vterm)
+
+(require 'multiple-cursors)
 
 
 
 
-(global-set-key (kbd "<f6>") (lambda() (interactive)(find-file "/home/vkocheganov/Development/gerrit_sources/lpr/release/ubuntu_16.04_x64_gcc5.4.0/demo/")))
+(defun vterm--rename-buffer-as-title (title)
+  (let ((dir (string-trim-left (concat (nth 1 (split-string title ":")) "/"))))
+    (cd-absolute dir)
+    ))
+(add-hook 'vterm-set-title-functions #'vterm--rename-buffer-as-title)

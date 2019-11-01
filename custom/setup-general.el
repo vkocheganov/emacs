@@ -112,8 +112,15 @@
       kept-new-versions      20 ; how many of the newest versions to keep
       kept-old-versions      5) ; and how many of the old
 
+;;; comment only region, not the lines. Makes sense when comment several lines
+(setq cd2/region-command 'cd2/comment-or-uncomment-region)
+
 (provide 'setup-general)
 
+(use-package company-shell
+  :config
+  (push 'company-shell company-backends)
+  )
 
 ;; (defalias 'yes-or-no-p 'y-or-n-p)
 

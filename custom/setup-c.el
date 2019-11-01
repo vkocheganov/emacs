@@ -16,6 +16,8 @@
   (setq company-idle-delay 0)
   (setq company-minimum-prefix-length 3)
   (add-hook 'c-mode-common-hook 'company-mode)
+  (add-hook 'shell-mode-hook 'company-mode)
+  (add-hook 'lisp-mode-hook 'company-mode)
   (add-hook 'emacs-lisp-mode-hook 'company-mode)
 
   (unless (package-installed-p 'irony)

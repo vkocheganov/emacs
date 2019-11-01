@@ -1,6 +1,6 @@
 ;; In order to use rtags one should install it:
 ;; sudo apt-get install clang && sudo apt-get install libclang-dev
-;; git clone --recursive https://github.com/Andersbakken/rtags.git && cd rtags && make && sudo make install
+;; git clone --recursive https://github.com/Andersbakken/rtags.git && cd rtags && ./configure && make && sudo make install
 ;;
 ;; And create .dir-locals.el at project root:
 ;; ((nil . ((cmake-ide-build-dir . "/home/vkocheganov/thirdparty/opencv/build"))))
@@ -32,6 +32,7 @@
 (push 'company-rtags company-backends)
 ;; (global-company-mode)
 (define-key c-mode-base-map (kbd "<C-tab>") (function company-complete))
+(define-key c-mode-base-map (kbd "<C-backspace>") (function rtags-location-stack-back))
 ;; use rtags flycheck mode -- clang warnings shown inline
 (use-package flycheck-rtags)
 ;; c-mode-common-hook is also called by c++-mode
