@@ -255,7 +255,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(multiple-cursors vterm multi-term company-shell bash-completion highlight-symbol irony-server yasnippet-snippets yasippet-snippets auto-complete-config auto-complete flycheck rtags cmake-ide posframe anaconda-mode anaconda sr-speedbar projectile company use-package magit helm-gtags))
+   '(openwith csv-mode perspective multiple-cursors vterm multi-term company-shell bash-completion highlight-symbol irony-server yasnippet-snippets yasippet-snippets auto-complete-config auto-complete flycheck rtags cmake-ide posframe anaconda-mode anaconda sr-speedbar projectile company use-package magit helm-gtags))
  '(speedbar-show-unknown-files t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -289,8 +289,6 @@
 
 (define-key term-raw-map (kbd "C-c C-j") 'term-line-mode)
 
-
-
 (add-to-list 'load-path "/home/vkocheganov/thirdparty/emacs-libvterm/")
 (require 'vterm)
 
@@ -304,3 +302,13 @@
     (cd-absolute dir)
     ))
 (add-hook 'vterm-set-title-functions #'vterm--rename-buffer-as-title)
+
+
+;; (add-to-list 'load-path "~/.emacs.d/")
+;; (require 'sunrise)
+
+
+(use-package openwith)
+(openwith-mode t)
+(setq openwith-associations '(("\\.pdf\\'" "evince" (file))))
+(setq openwith-associations '(("\\.avi\\'" "ffplay" (file))))
