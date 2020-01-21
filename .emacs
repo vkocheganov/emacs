@@ -255,7 +255,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(openwith csv-mode perspective multiple-cursors vterm multi-term company-shell bash-completion highlight-symbol irony-server yasnippet-snippets yasippet-snippets auto-complete-config auto-complete flycheck rtags cmake-ide posframe anaconda-mode anaconda sr-speedbar projectile company use-package magit helm-gtags))
+   '(helm-rtags openwith csv-mode perspective multiple-cursors vterm multi-term company-shell bash-completion highlight-symbol irony-server yasnippet-snippets yasippet-snippets auto-complete-config auto-complete flycheck rtags cmake-ide posframe anaconda-mode anaconda sr-speedbar projectile company use-package magit helm-gtags))
  '(speedbar-show-unknown-files t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
