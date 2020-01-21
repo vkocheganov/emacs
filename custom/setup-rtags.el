@@ -55,6 +55,9 @@
 (add-hook 'c-mode-common-hook #'setup-flycheck-rtags)
 (add-hook 'c++-mode-hook #'setup-flycheck-rtags)
 
-(setq rtags-display-result-backend 'helm)
+;; (use-package helm-rtags)
+;; (setq rtags-display-result-backend 'helm)
+(use-package ivy-rtags)
+(setq rtags-display-result-backend 'ivy)
 
 (provide 'setup-rtags)
