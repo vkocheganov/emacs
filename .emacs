@@ -159,21 +159,6 @@
 ;; (load "~/.emacs.d/lua2-mode.el")
 
 
-
-;; (custom-set-variables
-;;  ;; custom-set-variables was added by Custom.
-;;  ;; If you edit it by hand, you could mess it up, so be careful.
-;;  ;; Your init file should contain only one such instance.
-;;  ;; If there is more than one, they won't work right.
-;;  '(csv-separators (quote ("," "	" ";")))
-;;  '(custom-safe-themes
-;;    (quote
-;;     ("b741b866edeaa1df91a7c0dd8f93108fd94cf54af033b3ae7b19eac783468aba" "41576d31aa4aba50b68c66bc186c4a756241e0745ad4d7ff0e25ecbc21642c0b" "1e90834a232ff3b63c41b00e484754293a5c38d73080ddc6f77db72feb0b2f98" "a317b11ec40485bf2d2046d2936946e38a5a7440f051f3fcc4cdda27bde6c5d4" "abc06e7e22663af3fced7ee081f00e4db215b164379657f4ce93d801174eb0a6" "f8c944102219d62deea2379b1a41fc42a215cb3ee78f84841d93fa439930774d" default)))
-;;  '(package-selected-packages
-;;    (quote
-;;     (lua-mode zygospore helm-gtags helm yasnippet ws-butler volatile-highlights use-package undo-tree iedit dtrt-indent counsel-projectile company clean-aindent-mode anzu))))
-
-
 ;;
 ;;;;;;;;;; To get colorized output from shell-mode ;;;;;;;;;;
 ;;
@@ -255,7 +240,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(org protobuf-mode markdown-mode dired-launch ivy-rtags helm-rtags openwith csv-mode perspective multiple-cursors vterm multi-term company-shell bash-completion highlight-symbol irony-server yasnippet-snippets yasippet-snippets auto-complete-config auto-complete flycheck rtags cmake-ide posframe anaconda-mode anaconda sr-speedbar projectile company use-package magit helm-gtags))
+   '(which-key org-bullets beacon org protobuf-mode markdown-mode dired-launch ivy-rtags helm-rtags openwith csv-mode perspective multiple-cursors vterm multi-term company-shell bash-completion highlight-symbol irony-server yasnippet-snippets yasippet-snippets auto-complete-config auto-complete flycheck rtags cmake-ide posframe anaconda-mode anaconda sr-speedbar projectile company use-package magit helm-gtags))
  '(speedbar-show-unknown-files t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -343,3 +328,11 @@
 ;; (setq dired-launch-default-launcher '("xdg-open"))
 
 ;; (load "/home/vkocheganov/Development/github_sources/emacs/custom/diredp.el")
+
+
+(org-babel-load-file (expand-file-name "/home/vkocheganov/Development/github_sources/emacs/config.org"))
+
+(use-package which-key
+  :ensure t
+  :init
+  (which-key-mode))
