@@ -112,7 +112,8 @@
 
 
 ;;;;;;;;;;;; Highlighting ;;;;;;;;;;;;
-(use-package auto-highlight-symbol)
+(use-package auto-highlight-symbol
+  :ensure t)
 (add-hook 'c-mode-common-hook 'auto-highlight-symbol-mode)
 
 (use-package highlight-symbol)

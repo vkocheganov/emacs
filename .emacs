@@ -38,7 +38,7 @@
 ;;;;;;;;;; ************************************************
 
 (setq python-command "/usr/bin/python3.4")
-(use-package posframe)
+;; (use-package posframe)
 (use-package anaconda-mode)
 (add-hook 'python-mode-hook 'anaconda-mode)
 (eval-after-load 'python
@@ -269,10 +269,10 @@
     (comint-send-string "*htop*" "htop\n")))
 
 
-(use-package multi-term)
-(setq multi-term-program "/bin/bash")
+;; (use-package multi-term)
+;; (setq multi-term-program "/bin/bash")
+;; (define-key term-raw-map (kbd "C-c C-j") 'term-line-mode)
 
-(define-key term-raw-map (kbd "C-c C-j") 'term-line-mode)
 
 (add-to-list 'load-path "/home/vkocheganov/thirdparty/emacs-libvterm/")
 (require 'vterm)
