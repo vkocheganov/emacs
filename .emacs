@@ -255,7 +255,7 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(package-selected-packages
-   '(ivy-rtags helm-rtags openwith csv-mode perspective multiple-cursors vterm multi-term company-shell bash-completion highlight-symbol irony-server yasnippet-snippets yasippet-snippets auto-complete-config auto-complete flycheck rtags cmake-ide posframe anaconda-mode anaconda sr-speedbar projectile company use-package magit helm-gtags))
+   '(org protobuf-mode markdown-mode dired-launch ivy-rtags helm-rtags openwith csv-mode perspective multiple-cursors vterm multi-term company-shell bash-completion highlight-symbol irony-server yasnippet-snippets yasippet-snippets auto-complete-config auto-complete flycheck rtags cmake-ide posframe anaconda-mode anaconda sr-speedbar projectile company use-package magit helm-gtags))
  '(speedbar-show-unknown-files t))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
@@ -272,7 +272,7 @@
 ;; (global-set-key (kbd "<f6>") (lambda() (interactive)(insert "/home/vkocheganov/Development/gerrit_sources/lpr/release/ubuntu_16.04_x64_gcc5.4.0/demo/")))
 ;; (global-set-key (kbd "<f6>") (lambda() (interactive)(insert "/media/vkocheganov/88EE8B94EE8B7968/Users/79051/Documents/")))
 
-(global-set-key (kbd "<f7>") (lambda() (interactive)(dired "/home/vkocheganov/mounted/")))
+;; (global-set-key (kbd "<f7>") (lambda() (interactive)(dired "/home/vkocheganov/mounted/")))
 (global-set-key "\M-\r" 'shell-resync-dirs)
 
 
@@ -311,4 +311,35 @@
 (use-package openwith)
 (openwith-mode t)
 (setq openwith-associations '(("\\.pdf\\'" "evince" (file))))
-(setq openwith-associations '(("\\.avi\\'" "ffplay" (file))))
+(setq openwith-associations '(("\\.avi\\'" "vlc" (file))))
+
+
+(setq dired-listing-switches "-alh")
+
+
+(defun dired-get-size ()
+  (interactive)
+  (let ((files (dired-get-marked-files)))
+    (with-temp-buffer
+      (apply 'call-process "/usr/bin/du" nil t nil "-sch" files)
+      (message "Size of all marked files: %s"
+               (progn
+                 (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*total$")
+                 (match-string 1))))))
+
+(define-key dired-mode-map (kbd "?") 'dired-get-size)
+
+(defun revert-buffer-no-confirm ()
+  "Revert buffer without confirmation."
+  (interactive) (revert-buffer t t))
+(global-set-key (kbd "<f5>") 'revert-buffer-no-confirm)
+(global-set-key (kbd "C-<f5>") 'compile)
+
+(global-set-key (kbd "<f6>") (lambda() (interactive)(find-file "/home/vkocheganov/mounted/NAS/homes_Viktor.Kocheganov/VDC/data/")))
+(global-set-key (kbd "<f7>") (lambda() (interactive)(find-file "/ssh:ts13:/home/vkocheganov/link_training/vic_models/")))
+(global-set-key (kbd "<f8>") (lambda() (interactive)(find-file "/ssh:dl4:/home/vkocheganov/VDC/VideoAnnotation/")))
+;; (load "/home/vkocheganov/.emacs.d/elpa/dired-launch-20180607.1841/dired-launch.el")
+;; (dired-launch-enable)
+;; (setq dired-launch-default-launcher '("xdg-open"))
+
+;; (load "/home/vkocheganov/Development/github_sources/emacs/custom/diredp.el")

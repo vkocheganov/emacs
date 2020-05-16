@@ -9,14 +9,17 @@
 ;; cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 .
 ;; If you don't have cmake, you should do something like:
 ;; bear --append make -j16
+;; rdm &
+;; rc -J .
+
 ;; See https://vxlabs.com/2016/04/11/step-by-step-guide-to-c-navigation-and-completion-with-emacs-and-the-clang-based-rtags/
 ;; for more details
 
 (use-package rtags)
 (require 'rtags)
-(add-hook 'c-mode-hook 'rtags-start-process-unless-running)
-(add-hook 'c++-mode-hook 'rtags-start-process-unless-running)
-(add-hook 'objc-mode-hook 'rtags-start-process-unless-running)
+;; (add-hook 'c-mode-hook 'rtags-start-process-unless-running)
+;; (add-hook 'c++-mode-hook 'rtags-start-process-unless-running)
+;; (add-hook 'objc-mode-hook 'rtags-start-process-unless-running)
 ;; (use-package cmake-ide)
 ;; (cmake-ide-setup)
 (rtags-enable-standard-keybindings c-mode-base-map "\C-xr")
