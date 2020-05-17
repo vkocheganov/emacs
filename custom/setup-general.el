@@ -1,7 +1,3 @@
-;;;;;;;;;; Remove unnecessary windows ;;;;;;;;;;
-(if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
-(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
-(if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
 
 ;;;;;;;;;; Themes ;;;;;;;;;;
 ;;(load-theme 'northcode)
@@ -9,9 +5,6 @@
 
 ;;;;;;;;;; Garbage collector bytes threshold ;;;;;;;;;;
 (setq gc-cons-threshold 100000000)
-
-;;;;;;;;;; Hide startup screen ;;;;;;;;;;
-(setq inhibit-startup-message t)
 
 ;;;;;;;;;; Show unncessary whitespace that can mess up your diff ;;;;;;;;;;
 (add-hook 'prog-mode-hook

@@ -1,20 +1,19 @@
+* Prerequisites
+  Before using this init file one should ensure to have
+*** cmake
+*** git
+*** rtags (optional)
 * Basic customization
-** Others
+** Emacs init infrastructure
 #+BEGIN_SRC emacs-lisp
-
   (require 'package)
-  (package-initialize)
 #+END_SRC
 
-  Maximize screen on starup
-  #+BEGIN_SRC emacs-lisp
-  (add-to-list 'default-frame-alist '(fullscreen . maximized))
-  #+END_SRC
-
-  Add additional package sources
-  #+BEGIN_SRC emacs-lisp
-    (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
-  #+END_SRC
+Important line. It initializes some installed packages (which cannot be initialized with their default auto-(require 'helm-gtags).
+For helm-gtags to be found.
+#+BEGIN_SRC emacs-lisp
+  (package-initialize)
+#+END_SRC
 
   Add additional package sources
   #+BEGIN_SRC emacs-lisp
@@ -25,7 +24,7 @@
   #+BEGIN_SRC emacs-lisp
     (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
     (add-to-list 'package-archives '("gnu" . "https://elpa.gnu.org/packages/"))
-    (package-initialize) ;; Important line for helm-gtags to be found. It initializes some installed packages (which cannot be initialized with their default auto-(require 'helm-gtags)  
+    (package-initialize) ;; 
   #+END_SRC
 
   Load updates from these sources. Or 'use-package' will not be available
@@ -34,13 +33,11 @@
       (package-refresh-contents))
   #+END_SRC
 
-
   Install 'use-package'
   #+BEGIN_SRC emacs-lisp
     (unless (package-installed-p 'use-package)
       (package-install 'use-package))
   #+END_SRC
-  
 
   Make all the packages be loaded with 'use-package' instruction
   #+BEGIN_SRC emacs-lisp
@@ -53,7 +50,30 @@
     (use-package server)
     (unless (server-running-p) (server-start))
   #+END_SRC
-    
+
+  To remove: old init files
+  #+BEGIN_SRC emacs-lisp
+    (add-to-list 'load-path "~/.emacs.d/custom")
+  #+END_SRC
+
+** Edit/remove toolbars/windows etc
+Remove unnecessary windows
+#+BEGIN_SRC emacs-lisp
+  (if (fboundp 'scroll-bar-mode) (scroll-bar-mode -1))
+  (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+  (if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
+#+END_SRC
+
+Hide startup screen
+#+BEGIN_SRC emacs-lisp
+  (setq inhibit-startup-message t)
+#+END_SRC
+
+  Maximize screen on starup
+  #+BEGIN_SRC emacs-lisp
+  (add-to-list 'default-frame-alist '(fullscreen . maximized))
+  #+END_SRC
+
   Speedbar customization
   #+BEGIN_SRC emacs-lisp
     (use-package sr-speedbar)
@@ -63,38 +83,16 @@
     (setq sr-speedbar-skip-other-window-p t)
   #+END_SRC
 
-  #+BEGIN_SRC emacs-lisp
-    (add-to-list 'load-path "~/.emacs.d/custom")
-  #+END_SRC
-
+Enable filebrowser on the left
 #+BEGIN_SRC emacs-lisp
-  (use-package multiple-cursors)
+  ;;(global-set-key "\C-s\C-n" `neotree-toggle)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-  ;;;;;;;;;; Disable startup-screen ;;;;;;;;;;
-  ;(setq inhibit-startup-screen 1)
-
-  ;;;;;;;;;; Show column number (along with line number) ;;;;;;;;;;
-  ;;(column-number-mode 1)
-
-  ;;;;;;;;;; Enable filebrowser on the left ;;;;;;;;;;
-  ;;(global-set-key "\C-s\C-n" `neotree-toggle)
-
-
   ;; (global-set-key "\C-cb" 'windmove-left)
   ;; (global-set-key "\C-cf" 'windmove-right)
   ;; (global-set-key "\C-cp" 'windmove-up)
   ;; (global-set-key "\C-cn" 'windmove-down)
-#+END_SRC
-#+BEGIN_SRC emacs-lisp
- (require 'setup-general)
- (require 'setup-helm)
- (require 'setup-helm-gtags)
-  ;(require 'setup-cedet)
-  (require 'setup-editing)
-  (require 'setup-c)
-  (require 'setup-rtags)
 #+END_SRC
 
 ** Org-mode
@@ -102,8 +100,172 @@
     (define-key org-mode-map (kbd "C-c c") 'org-content)
 #+END_SRC
 
-* File system tree
-** Open .pdf, .avi etc
+** Others
+#+BEGIN_SRC emacs-lisp
+  (use-package multiple-cursors)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  ;;;;;;;;;; Show column number (along with line number) ;;;;;;;;;;
+  ;;(column-number-mode 1)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+ (require 'setup-general)
+ (require 'setup-helm-gtags)
+  ;(require 'setup-cedet)
+  (require 'setup-editing)
+  (require 'setup-c)
+  (require 'setup-rtags)
+#+END_SRC
+
+* Helm
+#+BEGIN_SRC emacs-lisp
+(use-package helm
+  :init
+  (progn
+    (require 'helm-config)
+    (require 'helm-grep)
+    ;; To fix error at compile:
+    ;; Error (bytecomp): Forgot to expand macro with-helm-buffer in
+    ;; (with-helm-buffer helm-echo-input-in-header-line)
+    (if (version< "26.0.50" emacs-version)
+        (eval-when-compile (require 'helm-lib)))
+
+    (defun helm-hide-minibuffer-maybe ()
+      (when (with-helm-buffer helm-echo-input-in-header-line)
+        (let ((ov (make-overlay (point-min) (point-max) nil nil t)))
+          (overlay-put ov 'window (selected-window))
+          (overlay-put ov 'face (let ((bg-color (face-background 'default nil)))
+                                  `(:background ,bg-color :foreground ,bg-color)))
+          (setq-local cursor-type nil))))
+
+    (add-hook 'helm-minibuffer-set-up-hook 'helm-hide-minibuffer-maybe)
+    ;; The default "C-x c" is quite close to "C-x C-c", which quits Emacs.
+    ;; Changed to "C-c h". Note: We must set "C-c h" globally, because we
+    ;; cannot change `helm-command-prefix-key' once `helm-config' is loaded.
+    (global-set-key (kbd "C-c h") 'helm-command-prefix)
+    (global-unset-key (kbd "C-x c"))
+
+    (define-key helm-map (kbd "<tab>") 'helm-execute-persistent-action) ; rebihnd tab to do persistent action
+    (define-key helm-map (kbd "C-i") 'helm-execute-persistent-action) ; make TAB works in terminal
+    (define-key helm-map (kbd "C-z")  'helm-select-action) ; list actions using C-z
+
+    (define-key helm-grep-mode-map (kbd "<return>")  'helm-grep-mode-jump-other-window)
+    (define-key helm-grep-mode-map (kbd "n")  'helm-grep-mode-jump-other-window-forward)
+    (define-key helm-grep-mode-map (kbd "p")  'helm-grep-mode-jump-other-window-backward)
+
+    (when (executable-find "curl")
+      (setq helm-google-suggest-use-curl-p t))
+
+    (setq helm-google-suggest-use-curl-p t
+          helm-scroll-amount 4 ; scroll 4 lines other window using M-<next>/M-<prior>
+          ;; helm-quick-update t ; do not display invisible candidates
+          helm-ff-search-library-in-sexp t ; search for library in `require' and `declare-function' sexp.
+
+          ;; you can customize helm-do-grep to execute ack-grep
+          ;; helm-grep-default-command "ack-grep -Hn --smart-case --no-group --no-color %e %p %f"
+          ;; helm-grep-default-recurse-command "ack-grep -H --smart-case --no-group --no-color %e %p %f"
+          helm-split-window-in-side-p t ;; open helm buffer inside current window, not occupy whole other window
+
+          helm-echo-input-in-header-line t
+
+          ;; helm-candidate-number-limit 500 ; limit the number of displayed canidates
+          helm-ff-file-name-history-use-recentf t
+          helm-move-to-line-cycle-in-source t ; move to end or beginning of source when reaching top or bottom of source.
+          helm-buffer-skip-remote-checking t
+
+          helm-mode-fuzzy-match t
+
+          helm-buffers-fuzzy-matching t ; fuzzy matching buffer names when non-nil
+                                        ; useful in helm-mini that lists buffers
+          helm-org-headings-fontify t
+          ;; helm-find-files-sort-directories t
+          ;; ido-use-virtual-buffers t
+          helm-semantic-fuzzy-match t
+          helm-M-x-fuzzy-match t
+          helm-imenu-fuzzy-match t
+          helm-lisp-fuzzy-completion t
+          ;; helm-apropos-fuzzy-match t
+          helm-buffer-skip-remote-checking t
+          helm-locate-fuzzy-match t
+          helm-display-header-line nil)
+
+    (add-to-list 'helm-sources-using-default-as-input 'helm-source-man-pages)
+
+    (global-set-key (kbd "M-x") 'helm-M-x)
+    (global-set-key (kbd "C-x C-m") 'helm-M-x)
+    (global-set-key (kbd "M-y") 'helm-show-kill-ring)
+    (global-set-key (kbd "C-x b") 'helm-buffers-list)
+    (global-set-key (kbd "C-x C-f") 'helm-find-files)
+    (global-set-key (kbd "C-c r") 'helm-recentf)
+    (global-set-key (kbd "C-h SPC") 'helm-all-mark-rings)
+    (global-set-key (kbd "C-c h o") 'helm-occur)
+
+    (global-set-key (kbd "C-c h w") 'helm-wikipedia-suggest)
+    (global-set-key (kbd "C-c h g") 'helm-google-suggest)
+
+    (global-set-key (kbd "C-c h x") 'helm-register)
+    ;; (global-set-key (kbd "C-x r j") 'jump-to-register)
+
+    (define-key 'help-command (kbd "C-f") 'helm-apropos)
+    (define-key 'help-command (kbd "r") 'helm-info-emacs)
+    (define-key 'help-command (kbd "C-l") 'helm-locate-library)
+
+    ;; use helm to list eshell history
+    (add-hook 'eshell-mode-hook
+              #'(lambda ()
+                  (define-key eshell-mode-map (kbd "M-l")  'helm-eshell-history)))
+
+;;; Save current position to mark ring
+    (add-hook 'helm-goto-line-before-hook 'helm-save-current-pos-to-mark-ring)
+
+    ;; show minibuffer history with Helm
+    (define-key minibuffer-local-map (kbd "M-p") 'helm-minibuffer-history)
+    (define-key minibuffer-local-map (kbd "M-n") 'helm-minibuffer-history)
+
+    (define-key global-map [remap find-tag] 'helm-etags-select)
+
+    (define-key global-map [remap list-buffers] 'helm-buffers-list)
+
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; PACKAGE: helm-swoop                ;;
+    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+    ;; Locate the helm-swoop folder to your path
+    (use-package helm-swoop
+      :bind (("C-c h o" . helm-swoop)
+             ("C-c s" . helm-multi-swoop-all))
+      :config
+      ;; When doing isearch, hand the word over to helm-swoop
+      (define-key isearch-mode-map (kbd "M-i") 'helm-swoop-from-isearch)
+
+      ;; From helm-swoop to helm-multi-swoop-all
+      (define-key helm-swoop-map (kbd "M-i") 'helm-multi-swoop-all-from-helm-swoop)
+
+      ;; Save buffer when helm-multi-swoop-edit complete
+      (setq helm-multi-swoop-edit-save t)
+
+      ;; If this value is t, split window inside the current window
+      (setq helm-swoop-split-with-multiple-windows t)
+
+      ;; Split direcion. 'split-window-vertically or 'split-window-horizontally
+      (setq helm-swoop-split-direction 'split-window-vertically)
+
+      ;; If nil, you can slightly boost invoke speed in exchange for text color
+      (setq helm-swoop-speed-or-color t))
+
+    (helm-mode 1)
+
+    (use-package helm-projectile
+      :init
+      (helm-projectile-on)
+      (setq projectile-completion-system 'helm)
+      (setq projectile-indexing-method 'alien))))
+#+END_SRC
+
+* File system infrastructure
+** File system tree
+*** Open .pdf, .avi etc
 #+BEGIN_SRC emacs-lisp
   (use-package openwith)
   (openwith-mode t)
@@ -111,7 +273,7 @@
   (setq openwith-associations '(("\\.avi\\'" "vlc" (file))))
 #+END_SRC
 
-** Dired
+*** Dired
 #+BEGIN_SRC emacs-lisp
   ;;(define-key dired-mode-map (kbd "<return>")   'dired-find-alternate-file)
 (eval-after-load "dired" '(progn
@@ -148,12 +310,12 @@
   (put 'dired-find-alternate-file 'disabled nil)
 #+END_SRC
 
-** Other
+*** Other
 #+BEGIN_SRC emacs-lisp
   ;; (require 'sunrise)
 #+END_SRC
 
-* Fast folder access (<F*> keys)
+** Fast folder access (<F*> keys)
 #+BEGIN_SRC emacs-lisp
   (defun revert-buffer-no-confirm ()
     "Revert buffer without confirmation."
@@ -164,6 +326,75 @@
   (global-set-key (kbd "<f6>") (lambda() (interactive)(find-file "/home/vkocheganov/mounted/NAS/homes_Viktor.Kocheganov/VDC/data/")))
   (global-set-key (kbd "<f7>") (lambda() (interactive)(find-file "/ssh:ts13:/home/vkocheganov/link_training/vic_models/")))
   (global-set-key (kbd "<f8>") (lambda() (interactive)(find-file "/ssh:dl4:/home/vkocheganov/VDC/VideoAnnotation/")))
+#+END_SRC
+
+** Shell/terminals
+*** Shell
+For proper processing of shell colors
+#+BEGIN_SRC emacs-lisp
+  (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
+  (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  ;;  (global-set-key "\M-\r" 'shell-resync-dirs)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  ;;
+  ;;;;;;;;;; To get colorized output from shell-mode ;;;;;;;;;;
+  ;;
+  ;; (require 'ansi-color)
+  ;; (defun ansi-color-apply-on-buffer ()
+  ;;     (ansi-color-apply-on-region (point-min) (point-max)))
+  ;; (defun ansi-color-apply-on-minibuffer ()
+  ;;   (let ((bufs (remove-if-not
+  ;;                (lambda (x) (string-starts-with (buffer-name x) " *Echo Area"))
+  ;;                (buffer-list))))
+  ;;     (dolist (buf bufs)
+  ;;       (with-current-buffer buf
+  ;;         (ansi-color-apply-on-buffer)))))
+  ;; (defun ansi-color-apply-on-minibuffer-advice (proc &rest rest)
+  ;;   (ansi-color-apply-on-minibuffer))
+  ;; (advice-add 'shell-command :after #'ansi-color-apply-on-minibuffer-advice)
+  ;; (advice-remove 'shell-command #'ansi-color-apply-on-minibuffer-advice)
+  ;; (defun add-test-function (cmd)
+  ;;   (interactive "sCommand to run: ")
+  ;;   (setq my-testall-test-function cmd)
+  ;;   (defun my-testall ()
+  ;;     (interactive)
+  ;;     (shell-command my-testall-test-function))
+  ;;   (local-set-key [f9] 'my-testall))
+  ;; (defun my-shell-execute(cmd)
+  ;;   (interactive "sShell command: ")
+  ;;   (shell (get-buffer-create "my-shell-buf"))
+  ;;   (process-send-string (get-buffer-process "my-shell-buf") (concat cmd "\n")))
+  ;; (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
+#+END_SRC
+
+*** Term/vterm
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package multi-term)
+  ;; (setq multi-term-program "/bin/bash")
+  ;; (define-key term-raw-map (kbd "C-c C-j") 'term-line-mode)
+
+  ;; (add-to-list 'load-path "/home/vkocheganov/thirdparty/emacs-libvterm/")
+  ;; (require 'vterm)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (defun vterm--rename-buffer-as-title (title)
+    (let ((dir (string-trim-left (concat (nth 1 (split-string title ":")) "/"))))
+      (cd-absolute dir)
+      ))
+  (add-hook 'vterm-set-title-functions #'vterm--rename-buffer-as-title)
+#+END_SRC
+
+** Magit
+#+BEGIN_SRC emacs-lisp
+  (use-package magit)
+  (global-unset-key "\C-xm")
+  (global-set-key (kbd "\C-xms") 'magit-status)
 #+END_SRC
 
 * Languages
@@ -260,75 +491,6 @@ Guide: https://tuhdo.github.io/c-ide.html
   ;; (add-hook 'lua-mode-hook 'my-lua-mode-hook)
 #+END_SRC
 
-* Shell/terminals
-** Shell
-For proper processing of shell colors
-#+BEGIN_SRC emacs-lisp
-  (autoload 'ansi-color-for-comint-mode-on "ansi-color" nil t)
-  (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-  ;;  (global-set-key "\M-\r" 'shell-resync-dirs)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-  ;;
-  ;;;;;;;;;; To get colorized output from shell-mode ;;;;;;;;;;
-  ;;
-  ;; (require 'ansi-color)
-  ;; (defun ansi-color-apply-on-buffer ()
-  ;;     (ansi-color-apply-on-region (point-min) (point-max)))
-  ;; (defun ansi-color-apply-on-minibuffer ()
-  ;;   (let ((bufs (remove-if-not
-  ;;                (lambda (x) (string-starts-with (buffer-name x) " *Echo Area"))
-  ;;                (buffer-list))))
-  ;;     (dolist (buf bufs)
-  ;;       (with-current-buffer buf
-  ;;         (ansi-color-apply-on-buffer)))))
-  ;; (defun ansi-color-apply-on-minibuffer-advice (proc &rest rest)
-  ;;   (ansi-color-apply-on-minibuffer))
-  ;; (advice-add 'shell-command :after #'ansi-color-apply-on-minibuffer-advice)
-  ;; (advice-remove 'shell-command #'ansi-color-apply-on-minibuffer-advice)
-  ;; (defun add-test-function (cmd)
-  ;;   (interactive "sCommand to run: ")
-  ;;   (setq my-testall-test-function cmd)
-  ;;   (defun my-testall ()
-  ;;     (interactive)
-  ;;     (shell-command my-testall-test-function))
-  ;;   (local-set-key [f9] 'my-testall))
-  ;; (defun my-shell-execute(cmd)
-  ;;   (interactive "sShell command: ")
-  ;;   (shell (get-buffer-create "my-shell-buf"))
-  ;;   (process-send-string (get-buffer-process "my-shell-buf") (concat cmd "\n")))
-  ;; (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
-#+END_SRC
-
-** Term
-#+BEGIN_SRC emacs-lisp
-  ;; (use-package multi-term)
-  ;; (setq multi-term-program "/bin/bash")
-  ;; (define-key term-raw-map (kbd "C-c C-j") 'term-line-mode)
-
-  ;; (add-to-list 'load-path "/home/vkocheganov/thirdparty/emacs-libvterm/")
-  ;; (require 'vterm)
-#+END_SRC
-
-#+BEGIN_SRC emacs-lisp
-  (defun vterm--rename-buffer-as-title (title)
-    (let ((dir (string-trim-left (concat (nth 1 (split-string title ":")) "/"))))
-      (cd-absolute dir)
-      ))
-  (add-hook 'vterm-set-title-functions #'vterm--rename-buffer-as-title)
-#+END_SRC
-
-* Magit
-#+BEGIN_SRC emacs-lisp
-  (use-package magit)
-  (global-unset-key "\C-xm")
-  (global-set-key (kbd "\C-xms") 'magit-status)
-#+END_SRC
-
 * Usefull routines
 ** htop
 #+BEGIN_SRC emacs-lisp
@@ -342,6 +504,55 @@ For proper processing of shell colors
 
 * Uncle Dave stuff
 #+BEGIN_SRC emacs-lisp
-  
+  ;;
+  ;; Configure ansi-term launch
+  (defvar my-term-shell "/bin/bash")
+  (defadvice ansi-term (before force-bash)
+    (interactive (list my-term-shell)))
+  (ad-activate 'ansi-term)
+  (global-set-key (kbd "M-RET") 'ansi-term)
+  (defalias 'yes-or-no-p 'y-or-n-p)
+
+  ;;
+  ;; Kill current buffer if no args passed
+  ;; Act as usual kill if run with C-u
+  (defun victor-kill-buffer (arg)
+    "kill current buffer"
+    (interactive "P")
+    (if arg
+      (call-interactively 'kill-buffer)
+        (kill-buffer)
+    ))
+  (global-set-key (kbd "C-x k") 'victor-kill-buffer)
+
+  ;; move cursor more continuosly at the window end
+  (setq scroll-conservatively 100)
+
+  ;;
+  ;; Highlight current line
+  (global-hl-line-mode t)
+  (set-face-background hl-line-face "gray13")
+  ;; (set-face-attribute hl-line-face nil  :foreground "white")
+  ;; (set-face-attribute hl-line-face nil :underline t)
+  (set-face-background 'highlight "gray13")
+  (set-face-foreground 'highlight nil)
+  ;; (set-face-underline-p 'highlight t)
+
+  ;;
+  ;; When scrolling beacon mode shortly highlights last line
+  (use-package beacon
+    :ensure t
+    :init )
+  (beacon-mode 1)
+
+  (setq make-backup-files nil)
+
+  ;; This is likely usefull in terminal
+  ;; (use-package org-bullets
+  ;; :ensure t
+  ;; :config 
+  ;; (add-hook  'org-mode-hook (lambda () (org-bulltes-mode))))
+
+  (define-key org-mode-map (kbd "C-c C-c") 'org-edit-src-code)
 #+END_SRC
 
