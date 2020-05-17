@@ -88,16 +88,45 @@ Enable filebrowser on the left
   ;;(global-set-key "\C-s\C-n" `neotree-toggle)
 #+END_SRC
 
+Commands to switch windows in the same frame
 #+BEGIN_SRC emacs-lisp
   ;; (global-set-key "\C-cb" 'windmove-left)
   ;; (global-set-key "\C-cf" 'windmove-right)
   ;; (global-set-key "\C-cp" 'windmove-up)
   ;; (global-set-key "\C-cn" 'windmove-down)
+(global-set-key "\C-xp" (lambda () (interactive) (other-window -1)))
+#+END_SRC
+
+** Styles
+Themes
+#+BEGIN_SRC emacs-lisp
+;;(load-theme 'northcode)
+(load-theme 'tango-dark)
 #+END_SRC
 
 ** Org-mode
 #+BEGIN_SRC emacs-lisp
     (define-key org-mode-map (kbd "C-c c") 'org-content)
+#+END_SRC
+
+** History/backup
+   Save sessions history to ~/.emacs.d/savehist file
+#+BEGIN_SRC emacs-lisp
+(setq savehist-save-minibuffer-history 1)
+(setq savehist-additional-variables
+      '(kill-ring search-ring regexp-search-ring compile-history log-edit-comment-ring)
+      savehist-file "~/.emacs.d/savehist")
+(savehist-mode t)
+#+END_SRC
+
+Write backups to ~/.emacs.d/backup/
+#+BEGIN_SRC emacs-lisp
+(setq backup-directory-alist '(("." . "/home/vkocheganov/.emacs.d/backup"))
+      backup-by-copying      t  ; Don't de-link hard links
+      version-control        t  ; Use version numbers on backups
+      delete-old-versions    t  ; Automatically delete excess backups:
+      kept-new-versions      20 ; how many of the newest versions to keep
+      kept-old-versions      5) ; and how many of the old
 #+END_SRC
 
 ** Others
@@ -118,7 +147,36 @@ Enable filebrowser on the left
   (require 'setup-c)
   (require 'setup-rtags)
 #+END_SRC
+Garbage collector bytes threshold
+#+BEGIN_SRC emacs-lisp
+(setq gc-cons-threshold 100000000)
+#+END_SRC
 
+Comment only region, not the lines. Makes sense when comment several lines
+#+BEGIN_SRC emacs-lisp
+(setq cd2/region-command 'cd2/comment-or-uncomment-region)
+#+END_SRC
+
+** Some key mappings
+Make things faster (basics from https://sites.google.com/site/steveyegge2/effective-emacs)
+#+BEGIN_SRC emacs-lisp
+(global-set-key "\C-x\C-m" 'execute-extended-command)
+(global-set-key "\C-w" 'backward-kill-word)
+(global-set-key "\C-x\C-k" 'kill-region)
+#+END_SRC
+
+Commands to deal with registers
+Use C-x r i to insert FROM register
+Use C-x r s r to insert TO register
+#+BEGIN_SRC emacs-lisp
+(global-set-key "\C-xra" `append-to-register)
+(global-set-key "\C-xrp" `prepend-to-register)
+#+END_SRC
+
+activate whitespace-mode to view all whitespace characters
+#+BEGIN_SRC emacs-lisp
+(global-set-key (kbd "C-c w") 'whitespace-mode)
+#+END_SRC
 * Helm
 #+BEGIN_SRC emacs-lisp
 (use-package helm
@@ -372,6 +430,14 @@ For proper processing of shell colors
   ;; (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 #+END_SRC
 
+Use company for shell completions
+#+BEGIN_SRC emacs-lisp
+(use-package company-shell
+  :config
+  (push 'company-shell company-backends)
+  )
+#+END_SRC
+
 *** Term/vterm
 #+BEGIN_SRC emacs-lisp
   ;; (use-package multi-term)
@@ -398,10 +464,68 @@ For proper processing of shell colors
 #+END_SRC
 
 * Languages
-** C/C++
+** General
+Show unncessary whitespace that can mess up your diff
+#+BEGIN_SRC emacs-lisp
+(add-hook 'prog-mode-hook
+          (lambda () (interactive)
+            (setq show-trailing-whitespace 1)))
+#+END_SRC
 
+Whitespaces instead of TABS. Always
+#+BEGIN_SRC emacs-lisp
+(setq-default indent-tabs-mode nil)
+#+END_SRC
+
+Show parenthesis and highlight them
+#+BEGIN_SRC emacs-lisp
+(show-paren-mode t)
+#+END_SRC
+
+Electric indent
+#+BEGIN_SRC emacs-lisp
+;; (setq show-paren-style 'expression)
+(electric-indent-mode nil)
+(electric-pair-mode t)
+#+END_SRC
+
+Set appearance of a tab that is represented by 4 spaces
+#+BEGIN_SRC emacs-lisp
+(setq-default tab-width 4)
+#+END_SRC
+
+Compilation
+#+BEGIN_SRC emacs-lisp
+  (global-set-key (kbd "<f5>") (lambda ()
+                                 (interactive)
+                                 (setq-local compilation-read-command nil)
+                                 (call-interactively 'compile)))
+#+END_SRC
+
+Projejctile project management tool.
+Automatically indent when press RET
+#+BEGIN_SRC emacs-lisp
+(use-package projectile
+  :init
+  (projectile-global-mode)
+  (setq projectile-enable-caching t)
+  (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
+#+END_SRC
+
+
+** C/C++
 C++ IDE setup
 Guide: https://tuhdo.github.io/c-ide.html
+*** GDB
+Setup GDB
+#+BEGIN_SRC emacs-lisp
+(setq
+ ;; use gdb-many-windows by default
+ gdb-many-windows t
+ ;; Non-nil means display source file containing the main routine at startup
+ gdb-show-main t
+ )
+#+END_SRC
 
 *** Generate tags
     Define function to create GTAGS files
@@ -501,6 +625,32 @@ Guide: https://tuhdo.github.io/c-ide.html
       (ansi-term "/bin/bash" "htop")
       (comint-send-string "*htop*" "htop\n")))
 #+END_SRC
+
+** Up/down scrolling
+Make 'up' and 'down' keyboard keys do scrolling (instead of moving)
+#+BEGIN_SRC emacs-lisp
+(defun gcm-scroll-up ()
+  (interactive)
+  (scroll-down 1))
+(defun gcm-scroll-down ()
+  (interactive)
+  (scroll-up 1))
+(global-set-key [(down)] 'gcm-scroll-down)
+(global-set-key [(up)]   'gcm-scroll-up)
+#+END_SRC
+** Copy-file-name
+#+BEGIN_SRC emacs-lisp
+(defun copy-file-name ()
+  "Copy the current buffer file name to the clipboard."
+  (interactive)
+  (let ((filename (if (equal major-mode 'dired-mode)
+                      default-directory
+                    (buffer-file-name))))
+    (when filename
+      (kill-new filename)
+      (message "Copied buffer file name '%s' to the clipboard." filename))))
+#+END_SRC
+
 
 * Uncle Dave stuff
 #+BEGIN_SRC emacs-lisp
