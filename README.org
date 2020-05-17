@@ -142,8 +142,6 @@ Write backups to ~/.emacs.d/backup/
 #+BEGIN_SRC emacs-lisp
  (require 'setup-helm-gtags)
   ;(require 'setup-cedet)
-  (require 'setup-c)
-  (require 'setup-rtags)
 #+END_SRC
 Garbage collector bytes threshold
 #+BEGIN_SRC emacs-lisp
@@ -186,6 +184,78 @@ activate whitespace-mode to view all whitespace characters
   :ensure t
   :config
     (which-key-mode))
+#+END_SRC
+** Company
+#+BEGIN_SRC emacs-lisp
+(use-package company
+  :init
+;;  (global-company-mode 1)
+;;  (delete 'company-semantic company-backends)
+  :config
+  (setq company-idle-delay 0)
+  (setq company-minimum-prefix-length 3)
+  (add-hook 'c-mode-common-hook 'company-mode)
+  (add-hook 'shell-mode-hook 'company-mode)
+  (add-hook 'lisp-mode-hook 'company-mode)
+  (add-hook 'emacs-lisp-mode-hook 'company-mode)
+
+  (unless (package-installed-p 'irony)
+    (package-install 'irony)
+    (shell-command (concat "echo " (shell-quote-argument (read-passwd "Password? "))
+                           " | sudo -S apt-get install --assume-yes clang libclang-dev"))
+    (call-interactively #'irony-install-server)
+    )
+
+  (use-package irony
+    :config
+    (add-hook 'c-mode-common-hook 'irony-mode)
+    (add-hook 'irony-mode-hook 'my-irony-mode-hook)
+    (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
+  ;;;;;;;;;; Auto-complete c headers ;;;;;;;;;;
+    (use-package company-irony-c-headers
+      :config
+      (add-to-list 'company-backends 'company-irony-c-headers)
+      )
+
+    (use-package company-irony
+      :config
+      (add-to-list 'company-backends 'company-irony)
+      )
+
+    (use-package flycheck-irony
+      :config
+      (eval-after-load 'flycheck '(add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
+      (add-hook 'c-mode-common-hook 'flycheck-mode)
+      )
+
+    (use-package irony-eldoc
+      :config
+      (add-hook 'irony-mode-hook #'irony-eldoc)
+      )
+    )
+  )
+
+(with-eval-after-load 'company
+  (define-key company-active-map (kbd "M-p") nil)
+  (define-key company-active-map (kbd "M-n") nil)
+  (define-key company-active-map (kbd "C-n") #'company-select-next)
+  (define-key company-active-map (kbd "C-p") #'company-select-previous))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+; for irony mode to work one needs to run 'irony-install-server'. Be sure to install clang + libclang-dev ;;      ;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(with-eval-after-load 'company
+  (add-hook 'c-mode-common-hook 'company-mode)
+  ;; (add-to-list
+  ;;   'company-backends '(company-irony-c-headers company-irony))
+  )
+(add-hook 'c-mode-common-hook
+          (lambda ()
+            (define-key c-mode-base-map  [(tab)] 'company-indent-or-complete-common)
+            )
+          )
 #+END_SRC
 * Editing
 #+BEGIN_SRC emacs-lisp
@@ -854,76 +924,6 @@ Setup GDB
     'irony-completion-at-point-async))
 
 
-(use-package company
-  :init
-;;  (global-company-mode 1)
-;;  (delete 'company-semantic company-backends)
-  :config
-  (setq company-idle-delay 0)
-  (setq company-minimum-prefix-length 3)
-  (add-hook 'c-mode-common-hook 'company-mode)
-  (add-hook 'shell-mode-hook 'company-mode)
-  (add-hook 'lisp-mode-hook 'company-mode)
-  (add-hook 'emacs-lisp-mode-hook 'company-mode)
-
-  (unless (package-installed-p 'irony)
-    (package-install 'irony)
-    (shell-command (concat "echo " (shell-quote-argument (read-passwd "Password? "))
-                           " | sudo -S apt-get install --assume-yes clang libclang-dev"))
-    (call-interactively #'irony-install-server)
-    )
-
-  (use-package irony
-    :config
-    (add-hook 'c-mode-common-hook 'irony-mode)
-    (add-hook 'irony-mode-hook 'my-irony-mode-hook)
-    (add-hook 'irony-mode-hook 'irony-cdb-autosetup-compile-options)
-  ;;;;;;;;;; Auto-complete c headers ;;;;;;;;;;
-    (use-package company-irony-c-headers
-      :config
-      (add-to-list 'company-backends 'company-irony-c-headers)
-      )
-
-    (use-package company-irony
-      :config
-      (add-to-list 'company-backends 'company-irony)
-      )
-
-    (use-package flycheck-irony
-      :config
-      (eval-after-load 'flycheck '(add-hook 'flycheck-mode-hook #'flycheck-irony-setup))
-      (add-hook 'c-mode-common-hook 'flycheck-mode)
-      )
-
-    (use-package irony-eldoc
-      :config
-      (add-hook 'irony-mode-hook #'irony-eldoc)
-      )
-    )
-  )
-
-(with-eval-after-load 'company
-  (define-key company-active-map (kbd "M-p") nil)
-  (define-key company-active-map (kbd "M-n") nil)
-  (define-key company-active-map (kbd "C-n") #'company-select-next)
-  (define-key company-active-map (kbd "C-p") #'company-select-previous))
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-; for irony mode to work one needs to run 'irony-install-server'. Be sure to install clang + libclang-dev ;;      ;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(with-eval-after-load 'company
-  (add-hook 'c-mode-common-hook 'company-mode)
-  ;; (add-to-list
-  ;;   'company-backends '(company-irony-c-headers company-irony))
-  )
-(add-hook 'c-mode-common-hook
-          (lambda ()
-            (define-key c-mode-base-map  [(tab)] 'company-indent-or-complete-common)
-            )
-          )
-
 
 ;;(add-hook 'after-init-hook 'global-company-mode)
 
@@ -969,6 +969,75 @@ Setup GDB
 
 #+END_SRC
 
+*** Setup-rtags
+#+BEGIN_SRC emacs-lisp
+;; In order to use rtags one should install it:
+;; sudo apt-get install clang && sudo apt-get install libclang-dev
+;; git clone --recursive https://github.com/Andersbakken/rtags.git && cd rtags && ./configure && make && sudo make install
+;;
+;; And create .dir-locals.el at project root:
+;; ((nil . ((cmake-ide-build-dir . "/home/vkocheganov/thirdparty/opencv/build"))))
+;;
+;; To make cmake-ide work one needs project to be compiled with following flag:
+;; cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 .
+;; If you don't have cmake, you should do something like:
+;; bear --append make -j16
+;; rdm &
+;; rc -J .
+
+;; See https://vxlabs.com/2016/04/11/step-by-step-guide-to-c-navigation-and-completion-with-emacs-and-the-clang-based-rtags/
+;; for more details
+
+(use-package rtags)
+(require 'rtags)
+;; (add-hook 'c-mode-hook 'rtags-start-process-unless-running)
+;; (add-hook 'c++-mode-hook 'rtags-start-process-unless-running)
+;; (add-hook 'objc-mode-hook 'rtags-start-process-unless-running)
+;; (use-package cmake-ide)
+;; (cmake-ide-setup)
+(rtags-enable-standard-keybindings c-mode-base-map "\C-xr")
+(define-key c-mode-base-map (kbd "M-.")
+  (function rtags-find-symbol-at-point))
+(define-key c-mode-base-map (kbd "M-,")
+  (function rtags-find-references-at-point))
+
+
+;;;; Begin auto completions section
+;;;;
+;; comment this out if you don't have or don't use helm
+(setq rtags-use-helm t)
+;; company completion setup
+(setq rtags-autostart-diagnostics t)
+(rtags-diagnostics)
+(setq rtags-completions-enabled t)
+(push 'company-rtags company-backends)
+;; (global-company-mode)
+(define-key c-mode-base-map (kbd "<C-tab>") (function company-complete))
+(define-key c-mode-base-map (kbd "<C-backspace>") (function rtags-location-stack-back))
+;;;;
+;;;; End auto completions section
+
+
+;; use rtags flycheck mode -- clang warnings shown inline
+(use-package flycheck-rtags)
+;; c-mode-common-hook is also called by c++-mode
+
+(defun setup-flycheck-rtags ()
+  (interactive)
+  (flycheck-select-checker 'rtags)
+  ;; RTags creates more accurate overlays.
+  (setq-local flycheck-highlighting-mode nil)
+  (setq-local flycheck-check-syntax-automatically nil))
+(add-hook 'c-mode-common-hook #'setup-flycheck-rtags)
+(add-hook 'c++-mode-hook #'setup-flycheck-rtags)
+
+;; (use-package helm-rtags)
+;; (setq rtags-display-result-backend 'helm)
+(use-package ivy-rtags)
+(setq rtags-display-result-backend 'ivy)
+
+
+#+END_SRC
 ** Python
   #+BEGIN_SRC emacs-lisp
     (setq python-command "/usr/bin/python3.4")
