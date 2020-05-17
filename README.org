@@ -1,7 +1,11 @@
 * Basic customization
+** Others
+#+BEGIN_SRC emacs-lisp
 
+  (require 'package)
   (package-initialize)
-  
+#+END_SRC
+
   Maximize screen on starup
   #+BEGIN_SRC emacs-lisp
   (add-to-list 'default-frame-alist '(fullscreen . maximized))
@@ -9,13 +13,11 @@
 
   Add additional package sources
   #+BEGIN_SRC emacs-lisp
-    (require 'package)
     (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
   #+END_SRC
 
   Add additional package sources
   #+BEGIN_SRC emacs-lisp
-    (require 'package)
     (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/"))
   #+END_SRC
 
@@ -66,8 +68,7 @@
   #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-  ;;(define-key dired-mode-map (kbd "<return>")   'dired-find-alternate-file)
-  (define-key dired-mode-map (kbd "C-M-u")   'dired-up-directory)
+  (use-package multiple-cursors)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -86,8 +87,126 @@
   ;; (global-set-key "\C-cp" 'windmove-up)
   ;; (global-set-key "\C-cn" 'windmove-down)
 #+END_SRC
+#+BEGIN_SRC emacs-lisp
+ (require 'setup-general)
+ (require 'setup-helm)
+ (require 'setup-helm-gtags)
+  ;(require 'setup-cedet)
+  (require 'setup-editing)
+  (require 'setup-c)
+  (require 'setup-rtags)
+#+END_SRC
 
-* Python
+** Org-mode
+#+BEGIN_SRC emacs-lisp
+    (define-key org-mode-map (kbd "C-c c") 'org-content)
+#+END_SRC
+
+* File system tree
+** Open .pdf, .avi etc
+#+BEGIN_SRC emacs-lisp
+  (use-package openwith)
+  (openwith-mode t)
+  (setq openwith-associations '(("\\.pdf\\'" "evince" (file))))
+  (setq openwith-associations '(("\\.avi\\'" "vlc" (file))))
+#+END_SRC
+
+** Dired
+#+BEGIN_SRC emacs-lisp
+  ;;(define-key dired-mode-map (kbd "<return>")   'dired-find-alternate-file)
+(eval-after-load "dired" '(progn
+  (define-key dired-mode-map (kbd "C-M-u")   'dired-up-directory) ))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (defun dired-get-size ()
+    (interactive)
+    (let ((files (dired-get-marked-files)))
+      (with-temp-buffer
+        (apply 'call-process "/usr/bin/du" nil t nil "-sch" files)
+        (message "Size of all marked files: %s"
+                 (progn
+                   (re-search-backward "\\(^[0-9.,]+[A-Za-z]+\\).*total$")
+                   (match-string 1))))))
+
+  (define-key dired-mode-map (kbd "?") 'dired-get-size)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (setq dired-listing-switches "-alh")
+#+END_SRC
+
+
+#+BEGIN_SRC emacs-lisp
+  ;; (load "/home/vkocheganov/.emacs.d/elpa/dired-launch-20180607.1841/dired-launch.el")
+  ;; (dired-launch-enable)
+  ;; (setq dired-launch-default-launcher '("xdg-open"))
+  ;; (load "/home/vkocheganov/Development/github_sources/emacs/custom/diredp.el")
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (put 'dired-find-alternate-file 'disabled nil)
+#+END_SRC
+
+** Other
+#+BEGIN_SRC emacs-lisp
+  ;; (require 'sunrise)
+#+END_SRC
+
+* Fast folder access (<F*> keys)
+#+BEGIN_SRC emacs-lisp
+  (defun revert-buffer-no-confirm ()
+    "Revert buffer without confirmation."
+    (interactive) (revert-buffer t t))
+  (global-set-key (kbd "<f5>") 'revert-buffer-no-confirm)
+  (global-set-key (kbd "C-<f5>") 'compile)
+
+  (global-set-key (kbd "<f6>") (lambda() (interactive)(find-file "/home/vkocheganov/mounted/NAS/homes_Viktor.Kocheganov/VDC/data/")))
+  (global-set-key (kbd "<f7>") (lambda() (interactive)(find-file "/ssh:ts13:/home/vkocheganov/link_training/vic_models/")))
+  (global-set-key (kbd "<f8>") (lambda() (interactive)(find-file "/ssh:dl4:/home/vkocheganov/VDC/VideoAnnotation/")))
+#+END_SRC
+
+* Languages
+** C/C++
+
+C++ IDE setup
+Guide: https://tuhdo.github.io/c-ide.html
+
+*** Generate tags
+    Define function to create GTAGS files
+    #+BEGIN_SRC emacs-lisp
+      (defun create-tags (dir-name)
+        "Create tags file."
+        (interactive "DDirectory: ")
+        (shell-command
+         (format "gtags %s" (directory-file-name dir-name)))
+        )
+    #+END_SRC
+    
+*** Code-style
+    Helm guide: https://tuhdo.github.io/helm-intro.html ;;;;;;;;;;
+    Download helm-gtags: https://github.com/syohex/emacs-helm-gtags
+    #+BEGIN_SRC emacs-lisp
+        (defun my-c-mode-common-hook ()
+        (c-set-style "Stroustrup")
+        ;; Show lines
+        (linum-mode 1)
+        ;; Following command affects to c-toggle-auto-newline
+        ;; That is automatically indent line after inserting
+        ;; one of {, }, :, #, ;, ,, <, >, /, *, (, and ).
+        (c-toggle-electric-state 1)
+        ;; Indent size
+        (setq c-basic-offset 4)
+        ;; Enable autocomplition mode
+        ;; (auto-complete-mode 1)
+        ;; Do not insert new line after ';' or ','
+        (setq c-hanging-semi&comma-criteria nil)
+        (setq comment-start "//"  comment-end   "")
+        )
+      (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
+    #+END_SRC
+    
+** Python
   #+BEGIN_SRC emacs-lisp
     (setq python-command "/usr/bin/python3.4")
     ;; (use-package posframe)
@@ -133,7 +252,7 @@
   
 #+END_SRC
 
-* Lua
+** Lua
 #+BEGIN_SRC emacs-lisp
   ;; (defun my-lua-mode-hook ()
   ;;   (setq lua-indent-level 4)
@@ -141,45 +260,6 @@
   ;; (add-hook 'lua-mode-hook 'my-lua-mode-hook)
 #+END_SRC
 
-* C/C++
-
-C++ IDE setup
-Guide: https://tuhdo.github.io/c-ide.html
-
-** Generate tags
-    Define function to create GTAGS files
-    #+BEGIN_SRC emacs-lisp
-      (defun create-tags (dir-name)
-        "Create tags file."
-        (interactive "DDirectory: ")
-        (shell-command
-         (format "gtags %s" (directory-file-name dir-name)))
-        )
-    #+END_SRC
-    
-** Code-style
-    Helm guide: https://tuhdo.github.io/helm-intro.html ;;;;;;;;;;
-    Download helm-gtags: https://github.com/syohex/emacs-helm-gtags
-    #+BEGIN_SRC emacs-lisp
-        (defun my-c-mode-common-hook ()
-        (c-set-style "Stroustrup")
-        ;; Show lines
-        (linum-mode 1)
-        ;; Following command affects to c-toggle-auto-newline
-        ;; That is automatically indent line after inserting
-        ;; one of {, }, :, #, ;, ,, <, >, /, *, (, and ).
-        (c-toggle-electric-state 1)
-        ;; Indent size
-        (setq c-basic-offset 4)
-        ;; Enable autocomplition mode
-        ;; (auto-complete-mode 1)
-        ;; Do not insert new line after ';' or ','
-        (setq c-hanging-semi&comma-criteria nil)
-        (setq comment-start "//"  comment-end   "")
-        )
-      (add-hook 'c-mode-common-hook 'my-c-mode-common-hook)
-    #+END_SRC
-    
 * Shell/terminals
 ** Shell
 For proper processing of shell colors
@@ -224,6 +304,24 @@ For proper processing of shell colors
   ;; (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 #+END_SRC
 
+** Term
+#+BEGIN_SRC emacs-lisp
+  ;; (use-package multi-term)
+  ;; (setq multi-term-program "/bin/bash")
+  ;; (define-key term-raw-map (kbd "C-c C-j") 'term-line-mode)
+
+  ;; (add-to-list 'load-path "/home/vkocheganov/thirdparty/emacs-libvterm/")
+  ;; (require 'vterm)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+  (defun vterm--rename-buffer-as-title (title)
+    (let ((dir (string-trim-left (concat (nth 1 (split-string title ":")) "/"))))
+      (cd-absolute dir)
+      ))
+  (add-hook 'vterm-set-title-functions #'vterm--rename-buffer-as-title)
+#+END_SRC
+
 * Magit
 #+BEGIN_SRC emacs-lisp
   (use-package magit)
@@ -232,7 +330,7 @@ For proper processing of shell colors
 #+END_SRC
 
 * Usefull routines
-#+NAME: htop
+** htop
 #+BEGIN_SRC emacs-lisp
   (defun htop ()
     (interactive)
@@ -240,5 +338,10 @@ For proper processing of shell colors
         (switch-to-buffer "*htop*")
       (ansi-term "/bin/bash" "htop")
       (comint-send-string "*htop*" "htop\n")))
+#+END_SRC
+
+* Uncle Dave stuff
+#+BEGIN_SRC emacs-lisp
+  
 #+END_SRC
 
