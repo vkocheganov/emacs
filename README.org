@@ -176,6 +176,18 @@ activate whitespace-mode to view all whitespace characters
 #+BEGIN_SRC emacs-lisp
 (global-set-key (kbd "C-c w") 'whitespace-mode)
 #+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+   ;;(define-key undo-tree-map (kbd "C-_") 'undo-tree-redo)
+  ;;; (define-key undo-tree-map (kbd "C-/") 'undo-tree-undo)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(use-package which-key
+  :ensure t
+  :config
+    (which-key-mode))
+#+END_SRC
 * Helm
 #+BEGIN_SRC emacs-lisp
 (use-package helm
@@ -704,5 +716,8 @@ Make 'up' and 'down' keyboard keys do scrolling (instead of moving)
   ;; (add-hook  'org-mode-hook (lambda () (org-bulltes-mode))))
 
   (define-key org-mode-map (kbd "C-c C-c") 'org-edit-src-code)
+
+(use-package async
+  :init (dired-async-mode 1))
 #+END_SRC
 
