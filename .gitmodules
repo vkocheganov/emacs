@@ -1,0 +1,3 @@
+[submodule "custom/yasnippets-orgmode"]
+	path = custom/yasnippets-orgmode
+	url = https://github.com/yyr/yasnippets-orgmode.git
