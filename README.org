@@ -517,47 +517,49 @@ Position the cursor at it's beginning, according to the current mode."
 (global-set-key (kbd "M-o") 'open-line)
 #+END_SRC
 
-*
+#+BEGIN_SRC emacs-lisp
+  (require 'csv-mode)
+#+END_SRC
 * Helm
 ** Helm-gtags
 #+BEGIN_SRC emacs-lisp
-;; this variables must be set before load helm-gtags
-;; you can change to any prefix key of your choice
-(setq helm-gtags-prefix-key "\C-cg")
+  ;; this variables must be set before load helm-gtags
+  ;; you can change to any prefix key of your choice
+  ;; (setq helm-gtags-prefix-key "\C-cg")
 
-(use-package helm-gtags
-  :init
-  (progn
-    (setq helm-gtags-ignore-case t
-          helm-gtags-auto-update t
-          helm-gtags-use-input-at-cursor t
-          helm-gtags-pulse-at-cursor t
-          helm-gtags-prefix-key "\C-cg"
-          helm-gtags-suggested-key-mapping t)
+  ;; (use-package helm-gtags
+  ;;   :init
+  ;;   (progn
+  ;;     (setq helm-gtags-ignore-case t
+  ;;           helm-gtags-auto-update t
+  ;;           helm-gtags-use-input-at-cursor t
+  ;;           helm-gtags-pulse-at-cursor t
+  ;;           helm-gtags-prefix-key "\C-cg"
+  ;;           helm-gtags-suggested-key-mapping t)
 
-    ;; Enable helm-gtags-mode in Dired so you can jump to any tag
-    ;; when navigate project tree with Dired
-    (add-hook 'dired-mode-hook 'helm-gtags-mode)
+  ;;     ;; Enable helm-gtags-mode in Dired so you can jump to any tag
+  ;;     ;; when navigate project tree with Dired
+  ;;     (add-hook 'dired-mode-hook 'helm-gtags-mode)
 
-    ;; Enable helm-gtags-mode in languages that GNU Global supports
-    (add-hook 'c-mode-hook 'helm-gtags-mode)
-    (add-hook 'c++-mode-hook 'helm-gtags-mode)
-    (add-hook 'java-mode-hook 'helm-gtags-mode)
-    (add-hook 'asm-mode-hook 'helm-gtags-mode)
+  ;;     ;; Enable helm-gtags-mode in languages that GNU Global supports
+  ;;     (add-hook 'c-mode-hook 'helm-gtags-mode)
+  ;;     (add-hook 'c++-mode-hook 'helm-gtags-mode)
+  ;;     (add-hook 'java-mode-hook 'helm-gtags-mode)
+  ;;     (add-hook 'asm-mode-hook 'helm-gtags-mode)
 
-    ;; key bindings
-    (with-eval-after-load 'helm-gtags
-      (define-key helm-gtags-mode-map (kbd "C-c g a") 'helm-gtags-tags-in-this-function)
-      (define-key helm-gtags-mode-map (kbd "C-j") 'helm-gtags-select)
-      (define-key helm-gtags-mode-map (kbd "M-.") 'helm-gtags-dwim)
-      (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)
-      (define-key helm-gtags-mode-map (kbd "C-c <") 'helm-gtags-previous-history)
-      (define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history))))
+  ;;     ;; key bindings
+  ;;     (with-eval-after-load 'helm-gtags
+  ;;       (define-key helm-gtags-mode-map (kbd "C-c g a") 'helm-gtags-tags-in-this-function)
+  ;;       (define-key helm-gtags-mode-map (kbd "C-j") 'helm-gtags-select)
+  ;;       (define-key helm-gtags-mode-map (kbd "M-.") 'helm-gtags-dwim)
+  ;;       (define-key helm-gtags-mode-map (kbd "M-,") 'helm-gtags-pop-stack)
+  ;;       (define-key helm-gtags-mode-map (kbd "C-c <") 'helm-gtags-previous-history)
+  ;;       (define-key helm-gtags-mode-map (kbd "C-c >") 'helm-gtags-next-history))))
 
-(define-key helm-gtags-mode-map (kbd "C-c C-s") 'sr-speedbar-toggle)
-(custom-set-variables
- '(speedbar-show-unknown-files t)
- )
+  ;; (define-key helm-gtags-mode-map (kbd "C-c C-s") 'sr-speedbar-toggle)
+  ;; (custom-set-variables
+  ;;  '(speedbar-show-unknown-files t)
+  ;;  )
 
 #+END_SRC
 
@@ -758,19 +760,6 @@ Position the cursor at it's beginning, according to the current mode."
   ;; (require 'sunrise)
 #+END_SRC
 
-** Fast folder access (<F*> keys)
-#+BEGIN_SRC emacs-lisp
-  (defun revert-buffer-no-confirm ()
-    "Revert buffer without confirmation."
-    (interactive) (revert-buffer t t))
-  (global-set-key (kbd "<f5>") 'revert-buffer-no-confirm)
-  (global-set-key (kbd "C-<f5>") 'compile)
-
-  (global-set-key (kbd "<f6>") (lambda() (interactive)(find-file "/home/vkocheganov/mounted/NAS/homes_Viktor.Kocheganov/VDC/data/")))
-  (global-set-key (kbd "<f7>") (lambda() (interactive)(find-file "/ssh:ts13:/home/vkocheganov/link_training/vic_models/")))
-  (global-set-key (kbd "<f8>") (lambda() (interactive)(find-file "/ssh:dl4:/home/vkocheganov/VDC/VideoAnnotation/")))
-#+END_SRC
-
 ** Shell/terminals
 *** Shell
 For proper processing of shell colors
@@ -839,6 +828,18 @@ Use company for shell completions
       (cd-absolute dir)
       ))
   (add-hook 'vterm-set-title-functions #'vterm--rename-buffer-as-title)
+#+END_SRC
+
+*** ansi-term
+#+BEGIN_SRC emacs-lisp
+(defun my-term-mode-hook ()
+  (define-key term-raw-map (kbd "C-y") 'term-paste)
+  (define-key term-raw-map (kbd "C-k")
+    (lambda ()
+      (interactive)
+      (term-send-raw-string "\C-k")
+      (kill-line))))
+(add-hook 'term-mode-hook 'my-term-mode-hook)
 #+END_SRC
 
 ** Magit
@@ -1014,70 +1015,71 @@ Setup GDB
 
 *** Setup-rtags
 #+BEGIN_SRC emacs-lisp
-;; In order to use rtags one should install it:
-;; sudo apt-get install clang && sudo apt-get install libclang-dev
-;; git clone --recursive https://github.com/Andersbakken/rtags.git && cd rtags && ./configure && make && sudo make install
-;;
-;; And create .dir-locals.el at project root:
-;; ((nil . ((cmake-ide-build-dir . "/home/vkocheganov/thirdparty/opencv/build"))))
-;;
-;; To make cmake-ide work one needs project to be compiled with following flag:
-;; cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 .
-;; If you don't have cmake, you should do something like:
-;; bear --append make -j16
-;; rdm &
-;; rc -J .
+  ;; In order to use rtags one should install it:
+  ;; sudo apt-get install clang && sudo apt-get install libclang-dev
+  ;; git clone --recursive https://github.com/Andersbakken/rtags.git && cd rtags && ./configure && make && sudo make install
+  ;;
+  ;; And create .dir-locals.el at project root:
+  ;; ((nil . ((cmake-ide-build-dir . "/home/vkocheganov/thirdparty/opencv/build"))))
+  ;;
+  ;; To make cmake-ide work one needs project to be compiled with following flag:
+  ;; cmake -DCMAKE_EXPORT_COMPILE_COMMANDS=1 .
+  ;; If you don't have cmake, you should do something like:
+  ;; bear --append make -j16
+  ;; rdm &
+  ;; rc -J .
 
-;; See https://vxlabs.com/2016/04/11/step-by-step-guide-to-c-navigation-and-completion-with-emacs-and-the-clang-based-rtags/
-;; for more details
+  ;; See https://vxlabs.com/2016/04/11/step-by-step-guide-to-c-navigation-and-completion-with-emacs-and-the-clang-based-rtags/
+  ;; for more details
 
-(use-package rtags)
-(require 'rtags)
-;; (add-hook 'c-mode-hook 'rtags-start-process-unless-running)
-;; (add-hook 'c++-mode-hook 'rtags-start-process-unless-running)
-;; (add-hook 'objc-mode-hook 'rtags-start-process-unless-running)
-;; (use-package cmake-ide)
-;; (cmake-ide-setup)
-(rtags-enable-standard-keybindings c-mode-base-map "\C-xr")
-(define-key c-mode-base-map (kbd "M-.")
-  (function rtags-find-symbol-at-point))
-(define-key c-mode-base-map (kbd "M-,")
-  (function rtags-find-references-at-point))
-
-
-;;;; Begin auto completions section
-;;;;
-;; comment this out if you don't have or don't use helm
-(setq rtags-use-helm t)
-;; company completion setup
-(setq rtags-autostart-diagnostics t)
-(rtags-diagnostics)
-(setq rtags-completions-enabled t)
-(push 'company-rtags company-backends)
-;; (global-company-mode)
-(define-key c-mode-base-map (kbd "<C-tab>") (function company-complete))
-(define-key c-mode-base-map (kbd "<C-backspace>") (function rtags-location-stack-back))
-;;;;
-;;;; End auto completions section
+  (load-file "~/thirdparty/rtags/src/rtags.el")
+  ;; (use-package rtags)
+  ;; (require 'rtags)
+  ;; (add-hook 'c-mode-hook 'rtags-start-process-unless-running)
+  ;; (add-hook 'c++-mode-hook 'rtags-start-process-unless-running)
+  ;; (add-hook 'objc-mode-hook 'rtags-start-process-unless-running)
+  ;; (use-package cmake-ide)
+  ;; (cmake-ide-setup)
+  (rtags-enable-standard-keybindings c-mode-base-map "\C-xr")
+  (define-key c-mode-base-map (kbd "M-.")
+    (function rtags-find-symbol-at-point))
+  (define-key c-mode-base-map (kbd "M-,")
+    (function rtags-find-references-at-point))
 
 
-;; use rtags flycheck mode -- clang warnings shown inline
-(use-package flycheck-rtags)
-;; c-mode-common-hook is also called by c++-mode
+  ;;;; Begin auto completions section
+  ;;;;
+  ;; comment this out if you don't have or don't use helm
+  (setq rtags-use-helm t)
+  ;; company completion setup
+  (setq rtags-autostart-diagnostics t)
+  (rtags-diagnostics)
+  (setq rtags-completions-enabled t)
+  (push 'company-rtags company-backends)
+  ;; (global-company-mode)
+  (define-key c-mode-base-map (kbd "<C-tab>") (function company-complete))
+  (define-key c-mode-base-map (kbd "<C-backspace>") (function rtags-location-stack-back))
+  ;;;;
+  ;;;; End auto completions section
 
-(defun setup-flycheck-rtags ()
-  (interactive)
-  (flycheck-select-checker 'rtags)
-  ;; RTags creates more accurate overlays.
-  (setq-local flycheck-highlighting-mode nil)
-  (setq-local flycheck-check-syntax-automatically nil))
-(add-hook 'c-mode-common-hook #'setup-flycheck-rtags)
-(add-hook 'c++-mode-hook #'setup-flycheck-rtags)
 
-;; (use-package helm-rtags)
-;; (setq rtags-display-result-backend 'helm)
-(use-package ivy-rtags)
-(setq rtags-display-result-backend 'ivy)
+  ;; use rtags flycheck mode -- clang warnings shown inline
+  (use-package flycheck-rtags)
+  ;; c-mode-common-hook is also called by c++-mode
+
+  (defun setup-flycheck-rtags ()
+    (interactive)
+    (flycheck-select-checker 'rtags)
+    ;; RTags creates more accurate overlays.
+    (setq-local flycheck-highlighting-mode nil)
+    (setq-local flycheck-check-syntax-automatically nil))
+  (add-hook 'c-mode-common-hook #'setup-flycheck-rtags)
+  (add-hook 'c++-mode-hook #'setup-flycheck-rtags)
+
+  ;; (use-package helm-rtags)
+  ;; (setq rtags-display-result-backend 'helm)
+  ;; (use-package ivy-rtags)
+  ;; (setq rtags-display-result-backend 'ivy)
 
 
 #+END_SRC
@@ -1229,3 +1231,16 @@ Make 'up' and 'down' keyboard keys do scrolling (instead of moving)
   :init (dired-async-mode 1))
 #+END_SRC
 
+* Key-bindings
+** Fast folder access (<F*> keys)
+#+BEGIN_SRC emacs-lisp
+  (defun revert-buffer-no-confirm ()
+    "Revert buffer without confirmation."
+    (interactive) (revert-buffer t t))
+  (global-set-key (kbd "<f5>") 'revert-buffer-no-confirm)
+  (global-set-key (kbd "C-<f5>") 'compile)
+
+  (global-set-key (kbd "<f6>") (lambda() (interactive)(find-file "/home/vkocheganov/mounted/NAS/homes_Viktor.Kocheganov/VDC/data/")))
+  (global-set-key (kbd "<f7>") (lambda() (interactive)(find-file "/ssh:ts13:/home/vkocheganov/link_training/vic_models/")))
+  (global-set-key (kbd "<f8>") (lambda() (interactive)(find-file "/ssh:dl4:/home/vkocheganov/VDC/VideoAnnotation/")))
+#+END_SRC
