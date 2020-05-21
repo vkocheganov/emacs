@@ -310,15 +310,6 @@ activate whitespace-mode to view all whitespace characters
 ;;   :init
 ;;   (global-undo-tree-mode 1))
 
-
-;; Package: yasnippet
-;; GROUP: Editing -> Yasnippet
-;; Package: yasnippet
-(use-package yasnippet
-  :defer t
-  :init
-  (add-hook 'prog-mode-hook 'yas-minor-mode))
-
 ;; Package: clean-aindent-mode
 (use-package clean-aindent-mode
   :init
@@ -898,6 +889,17 @@ Automatically indent when press RET
   (define-key projectile-mode-map (kbd "C-c p") 'projectile-command-map))
 #+END_SRC
 
+Yas-snipets.
+Usefull command: yas-describe-table
+#+BEGIN_SRC emacs-lisp
+  (use-package yasnippet
+    :config (use-package yasnippet-snippets)
+    (yas-reload-all)
+    (add-hook 'prog-mode-hook 'yas-minor-mode)
+  )
+  ;; (yas-global-mode)
+#+END_SRC
+
 ** C/C++
 C++ IDE setup
 Guide: https://tuhdo.github.io/c-ide.html
@@ -958,59 +960,50 @@ Setup GDB
     
 *** Setup-c
 #+BEGIN_SRC emacs-lisp
-;;;;;;;;;; Company mode ;;;;;;;;;;
-;;;;;;;;;; Auto completion ;;;;;;;;;;
+  ;;;;;;;;;; Company mode ;;;;;;;;;;
+  ;;;;;;;;;; Auto completion ;;;;;;;;;;
 
-(defun my-irony-mode-hook ()
-  (define-key irony-mode-map [remap completion-at-point]
-    'irony-completion-at-point-async)
-  (define-key irony-mode-map [remap complete-symbol]
-    'irony-completion-at-point-async))
-
-
-
-;;(add-hook 'after-init-hook 'global-company-mode)
-
-;;;;;;;;;; Hide/show blocks of code ;;;;;;;;;;
-;;;;;;;;; C-c @ C-M-s show all
-;;;;;;;;; C-c @ C-M-h hide all
-;;;;;;;;; C-c @ C-s show block
-;;;;;;;;; C-c @ C-h hide block
-;;;;;;;;; C-c @ C-c toggle hide/show
-(add-hook 'c-mode-common-hook 'hs-minor-mode)
-
-;; Available C style:
-;; “gnu”: The default style for GNU projects
-;; “k&r”: What Kernighan and Ritchie, the authors of C used in their book
-;; “bsd”: What BSD developers use, aka “Allman style” after Eric Allman.
-;; “whitesmith”: Popularized by the examples that came with Whitesmiths C, an early commercial C compiler.
-;; “stroustrup”: What Stroustrup, the author of C++ used in his book
-;; “ellemtel”: Popular C++ coding standards as defined by “Programming in C++, Rules and Recommendations,” Erik Nyquist and Mats Henricson, Ellemtel
-;; “linux”: What the Linux developers use for kernel development
-;; “python”: What Python developers use for extension modules
-;; “java”: The default style for java-mode (see below)
-;; “user”: When you want to define your own style
-(setq c-default-style "stroustrup") ;; set style to "linux"
-
-(use-package yasnippet
-  :config (use-package yasnippet-snippets)
-  (yas-reload-all))
-(yas-global-mode)
-
-
-;;;;;;;;;;;; Highlighting ;;;;;;;;;;;;
-(use-package auto-highlight-symbol
-  :ensure t)
-(add-hook 'c-mode-common-hook 'auto-highlight-symbol-mode)
-
-(use-package highlight-symbol)
-(global-set-key [(control f3)] 'highlight-symbol)
-(global-set-key [f3] 'highlight-symbol-next)
-(global-set-key [(shift f3)] 'highlight-symbol-prev)
-(global-set-key [(meta f3)] 'highlight-symbol-query-replace)
+  (defun my-irony-mode-hook ()
+    (define-key irony-mode-map [remap completion-at-point]
+      'irony-completion-at-point-async)
+    (define-key irony-mode-map [remap complete-symbol]
+      'irony-completion-at-point-async))
 
 
 
+  ;;(add-hook 'after-init-hook 'global-company-mode)
+
+  ;;;;;;;;;; Hide/show blocks of code ;;;;;;;;;;
+  ;;;;;;;;; C-c @ C-M-s show all
+  ;;;;;;;;; C-c @ C-M-h hide all
+  ;;;;;;;;; C-c @ C-s show block
+  ;;;;;;;;; C-c @ C-h hide block
+  ;;;;;;;;; C-c @ C-c toggle hide/show
+  (add-hook 'c-mode-common-hook 'hs-minor-mode)
+
+  ;; Available C style:
+  ;; “gnu”: The default style for GNU projects
+  ;; “k&r”: What Kernighan and Ritchie, the authors of C used in their book
+  ;; “bsd”: What BSD developers use, aka “Allman style” after Eric Allman.
+  ;; “whitesmith”: Popularized by the examples that came with Whitesmiths C, an early commercial C compiler.
+  ;; “stroustrup”: What Stroustrup, the author of C++ used in his book
+  ;; “ellemtel”: Popular C++ coding standards as defined by “Programming in C++, Rules and Recommendations,” Erik Nyquist and Mats Henricson, Ellemtel
+  ;; “linux”: What the Linux developers use for kernel development
+  ;; “python”: What Python developers use for extension modules
+  ;; “java”: The default style for java-mode (see below)
+  ;; “user”: When you want to define your own style
+  (setq c-default-style "stroustrup") ;; set style to "linux"
+
+  ;;;;;;;;;;;; Highlighting ;;;;;;;;;;;;
+  (use-package auto-highlight-symbol
+    :ensure t)
+  (add-hook 'c-mode-common-hook 'auto-highlight-symbol-mode)
+
+  (use-package highlight-symbol)
+  (global-set-key [(control f3)] 'highlight-symbol)
+  (global-set-key [f3] 'highlight-symbol-next)
+  (global-set-key [(shift f3)] 'highlight-symbol-prev)
+  (global-set-key [(meta f3)] 'highlight-symbol-query-replace)
 #+END_SRC
 
 *** Setup-rtags

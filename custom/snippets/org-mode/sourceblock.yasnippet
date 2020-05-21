@@ -1,0 +1,9 @@
+# -*- mode: snippet -*-
+# name : #+srcname:..#+begin_src...#+end_src
+# key: sb
+# binding: C-c y s
+# condition: (or (= (current-column) 2) (= (current-column) 0))
+# --
+#+BEGIN_SRC ${1:emacs-lisp}
+`(current-kill 0)`
+#+END_SRC
