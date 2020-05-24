@@ -109,6 +109,154 @@ Themes
 #+BEGIN_SRC emacs-lisp
   (define-key org-mode-map (kbd "C-c c") 'org-content)
 #+END_SRC
+#+BEGIN_SRC emacs-lisp
+  (defun org-fitness-goto-table (name)
+    "Go to table named NAME if point is not in any table."
+    (unless (org-at-table-p)
+      (let ((org-babel-results-keyword "NAME"))
+        (org-babel-goto-named-result name)
+        (forward-line 2))))
+
+  (defun org-fitness-sum-rectangle ()
+    "Sum values in marked rectangle."
+    (interactive)
+    (message "%s: %.2f"
+             (org-fitness-column-name-at-point)
+             (->> (extract-rectangle (region-beginning) (region-end))
+                  (-map 'string-to-number)
+                  (-sum))))
+
+  (defmacro org-with-table (table-name &rest body)
+    "Move point to inside Org table TABLE-NAME and execute BODY."
+    (declare (indent defun))
+    `(org-with-wide-buffer
+      (let ((org-babel-results-keyword "NAME"))
+        (org-babel-goto-named-result ,table-name)
+        (forward-line 2)
+        ,@body)))
+
+  (defun org-table-name-at-point ()
+    "Return name of table at point."
+    (org-with-wide-buffer
+     (goto-char (org-table-begin))
+     (forward-line -1)
+     (beginning-of-line)
+     (re-search-forward (rx "#+NAME:" (1+ space) (group (1+ (not space))) eol))
+     (match-string-no-properties 1)))
+
+  (defun org-table-column-names (&optional table-name)
+    "Return list of column names for TABLE-NAME or table at point."
+    (org-with-table
+     (or table-name (org-table-name-at-point))
+     (org-table-analyze)
+     (--map (org-no-properties (car it))
+            org-table-column-names)))
+
+  (defun org-fitness-timestamp-at-point ()
+    "Return any Org timestamp at point, or nil."
+    (when (org-at-timestamp-p t) (match-string-no-properties 0)))
+
+  (defun org-fitness-column-names-at-point ()
+    "Return list of column names for table at point."
+    (org-table-analyze)
+    (--map (org-no-properties (car it))
+           org-table-column-names))
+
+  (defun org-fitness-column-name-at-point ()
+    "Return name of column at point."
+    (let ((column (org-table-current-column)))
+      (org-with-wide-buffer
+       (org-table-goto-line 0)
+       (s-trim (substring-no-properties (org-table-get-field column))))))
+
+  (defun org-fitness-table-name-at-point ()
+    (org-with-wide-buffer
+     (goto-char (org-table-begin))
+     (forward-line -1)
+     (beginning-of-line)
+     (re-search-forward (rx "#+NAME:" (1+ space) (group (1+ (not space))) eol))
+     (match-string-no-properties 1)))
+
+  (defun org-fitness-sum-column (&optional table column date)
+    "Return sum of COLUMN in TABLE for DATE.
+  TABLE should be the name of an Org table. If nil and point is in
+  a table, the current table will be used.
+
+  DATE should be an Org timestamp. If nil and point is on a
+  timestamp, DATE will be picked up from point.  If just nil, date
+  will be ignored.
+
+  COLUMN should be the name of a column's header field. If nil and
+  the point is in an Org table, the name of the current column will
+  be used."
+    (interactive)
+    (let* ((table (or table (org-fitness-table-name-at-point)))
+           (column (or column (org-fitness-column-name-at-point)))
+           (ts-at-point (org-fitness-timestamp-at-point))
+           (date (or date
+                     (when (and ts-at-point
+                                (org-at-table-p))
+                       ;; TODO: Use a function to get the date column index
+                       (org-with-wide-buffer (org-table-get-field 2)))))
+           (sum (-sum (-map 'string-to-number
+                            (-flatten (org-fitness-select-columns table (list column) date))))))
+      ;; (if (floatp sum)
+      ;; (format "%0.2f" sum)
+      ;; sum)
+      sum))
+
+  (defun org-fitness-select-columns (table-name column-names &optional date)
+    "Return list of rows with selected COLUMN-NAMES in TABLE-NAME for DATE.
+
+  COLUMN-NAMES is a list of strings.
+
+  If DATE is nil, ignore date.  If DATE is symbol `today', today's
+  date will be used.
+
+  This function expects the table to have a header row in which the
+  date column is named \"Date\" and contains Org timestamps."
+    (let* ((org-extend-today-until 4)
+           (day-number (cond
+                        ((null date) nil)
+                        ((equal date 'today) (org-today))
+                        (date (1+ (date-to-day date)))))
+           (table-data (--remove (or (equal 'hline it)
+                                     ;; Remove lines without a date (second column)
+                                     (string-empty-p (nth 1 it)))
+                                 (org-with-table table-name
+                                                 (org-table-to-lisp))))
+           (header (car table-data))
+           (date-column-number (--find-index (string= "date" (downcase it)) header))
+           (column-numbers
+            ;; The indexes of the columns we need to "pre-select", including the date, even if the date is not being returned
+            (-sort '< (-uniq (--map (-find-index (-partial 'string= it) header)
+                                    column-names))))
+           (final-columns
+            ;; The adjusted indexes of the columns we're returning, after they've been pre-selected
+            (number-sequence 1 (length column-numbers))))
+      (->> (cdr table-data)               ; Remove header
+           (-select-columns (cons date-column-number column-numbers))
+           ((lambda (row)
+              (if (null day-number)
+                  row
+                (--filter (= day-number
+                             (->> (car it) ; Date column is first
+                                  (org-time-string-to-time)
+                                  (time-to-days)))
+                          row))))
+
+           ;; Remove date column if not requested
+           (-select-columns final-columns))))
+
+  (defun org-fitness-remove-columns-by-indices (indices table)
+    "Return TABLE without columns specified by INDICES.
+  INDICES is a list of integers and TABLE is a list of lists."
+    (let* ((num-columns (length (car table)))
+           (columns (-remove (lambda (col)
+                               (memq col indices))
+                             (number-sequence 0 (1- num-columns)))))
+      (-select-columns columns table)))
+#+END_SRC
 
 ** History/backup
    Save sessions history to ~/.emacs.d/savehist file
@@ -1250,4 +1398,3 @@ Dangerous key binding:
 #+BEGIN_SRC emacs-lisp
 (setq org-image-actual-width nil)
 #+END_SRC
-
