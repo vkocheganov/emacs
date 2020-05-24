@@ -107,7 +107,7 @@ Themes
 
 ** Org-mode
 #+BEGIN_SRC emacs-lisp
-    (define-key org-mode-map (kbd "C-c c") 'org-content)
+  (define-key org-mode-map (kbd "C-c c") 'org-content)
 #+END_SRC
 
 ** History/backup
@@ -1219,10 +1219,13 @@ Make 'up' and 'down' keyboard keys do scrolling (instead of moving)
   ;; :config 
   ;; (add-hook  'org-mode-hook (lambda () (org-bulltes-mode))))
 
-  (define-key org-mode-map (kbd "C-c C-c") 'org-edit-src-code)
-
 (use-package async
   :init (dired-async-mode 1))
+#+END_SRC
+
+Dangerous key binding:
+#+BEGIN_SRC emacs-lisp
+  ;; (define-key org-mode-map (kbd "C-c C-c") 'org-edit-src-code)
 #+END_SRC
 
 * Key-bindings
@@ -1238,3 +1241,13 @@ Make 'up' and 'down' keyboard keys do scrolling (instead of moving)
   (global-set-key (kbd "<f7>") (lambda() (interactive)(find-file "/ssh:ts13:/home/vkocheganov/link_training/vic_models/")))
   (global-set-key (kbd "<f8>") (lambda() (interactive)(find-file "/ssh:dl4:/home/vkocheganov/VDC/VideoAnnotation/")))
 #+END_SRC
+* gnuplot
+#+BEGIN_SRC emacs-lisp
+  (use-package gnuplot)
+  (use-package gnuplot-mode)
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(setq org-image-actual-width nil)
+#+END_SRC
+
