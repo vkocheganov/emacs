@@ -109,6 +109,7 @@ Themes
 #+BEGIN_SRC emacs-lisp
   (define-key org-mode-map (kbd "C-c c") 'org-content)
 #+END_SRC
+*** Tables
 #+BEGIN_SRC emacs-lisp
   (defun org-fitness-goto-table (name)
     "Go to table named NAME if point is not in any table."
@@ -137,11 +138,14 @@ Themes
 
   (defun org-table-name-at-point ()
     "Return name of table at point."
+    (interactive)
     (org-with-wide-buffer
      (goto-char (org-table-begin))
      (forward-line -1)
      (beginning-of-line)
-     (re-search-forward (rx "#+NAME:" (1+ space) (group (1+ (not space))) eol))
+     ;; (re-search-forward (rx "#+TBLNAME:" (1+ space) (group (1+ (not space))) eol))
+ (re-search-forward (rx "#+TBLNAME:" (group (1+ (not space))) eol))
+;;     (re-search-forward (rx "#+TBLNAME:"  (1+ (not space)) eol))
      (match-string-no-properties 1)))
 
   (defun org-table-column-names (&optional table-name)
