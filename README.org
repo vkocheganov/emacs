@@ -108,6 +108,8 @@ Themes
 ** Org-mode
 #+BEGIN_SRC emacs-lisp
   (define-key org-mode-map (kbd "C-c c") 'org-content)
+(define-key org-mode-map (kbd "C-c M-p") 'org-table-move-row-up)
+(define-key org-mode-map (kbd "C-c M-n") 'org-table-move-row-down)
 #+END_SRC
 *** Tables
 #+BEGIN_SRC emacs-lisp
@@ -144,7 +146,7 @@ Themes
      (forward-line -1)
      (beginning-of-line)
      ;; (re-search-forward (rx "#+TBLNAME:" (1+ space) (group (1+ (not space))) eol))
- (re-search-forward (rx "#+TBLNAME:" (group (1+ (not space))) eol))
+ (re-search-forward (rx "#+TBLNAME:" (group (1+ (not space))) eol) nil t)
 ;;     (re-search-forward (rx "#+TBLNAME:"  (1+ (not space)) eol))
      (match-string-no-properties 1)))
 
@@ -260,6 +262,12 @@ Themes
                                (memq col indices))
                              (number-sequence 0 (1- num-columns)))))
       (-select-columns columns table)))
+#+END_SRC
+
+#+BEGIN_SRC emacs-lisp
+(org-babel-do-load-languages
+'org-babel-load-languages
+'((python . t)))
 #+END_SRC
 
 ** History/backup
@@ -410,6 +418,34 @@ activate whitespace-mode to view all whitespace characters
             )
           )
 #+END_SRC
+** Russian layout controls
+#+BEGIN_SRC emacs-lisp
+  (defun reverse-input-method (input-method)
+    "Build the reverse mapping of single letters from INPUT-METHOD."
+    (interactive
+     (list (read-input-method-name "Use input method (default current): ")))
+    (if (and input-method (symbolp input-method))
+        (setq input-method (symbol-name input-method)))
+    (let ((current current-input-method)
+          (modifiers '(nil (control) (meta) (control meta))))
+      (when input-method
+        (activate-input-method input-method))
+      (when (and current-input-method quail-keyboard-layout)
+        (dolist (map (cdr (quail-map)))
+          (let* ((to (car map))
+                 (from (quail-get-translation
+                        (cadr map) (char-to-string to) 1)))
+            (when (and (characterp from) (characterp to))
+              (dolist (mod modifiers)
+                (define-key local-function-key-map
+                  (vector (append mod (list from)))
+                  (vector (append mod (list to)))))))))
+      (when input-method
+        (activate-input-method current))))
+
+  (reverse-input-method 'russian-computer)
+#+END_SRC
+
 * Editing
 #+BEGIN_SRC emacs-lisp
 ;; GROUP: Editing -> Editing Basics
