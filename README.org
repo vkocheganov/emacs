@@ -1232,22 +1232,22 @@ Setup GDB
 #+END_SRC
 ** Python
   #+BEGIN_SRC emacs-lisp
-    (setq python-command "/usr/bin/python3.4")
-    ;; (use-package posframe)
-    (use-package anaconda-mode)
-    (add-hook 'python-mode-hook 'anaconda-mode)
-    (eval-after-load 'python
-      '(define-key python-mode-map "\C-xpb" 'python-nav-backward-block))
-    (eval-after-load 'python
-      '(define-key python-mode-map "\C-xpl" 'python-nav-backward-up-list))
-    (eval-after-load 'python
-      '(define-key python-mode-map "\C-xpf" 'python-nav-forward-block))
-    (eval-after-load 'python
-      '(define-key python-mode-map "\C-xpm" 'python-mark-defun))
-    (eval-after-load 'python
-      '(define-key python-mode-map "\C-xpm" 'python-mark-defun))
-    (eval-after-load 'python
-      '(define-key python-mode-map "\M-i" 'anaconda-mode-complete))
+;;    (setq python-command "/ssh:192.168.10.193:/mnt/media/users/vkocheganov/thirdparty/python3.6.8/env/vdc_detectron/bin/python")
+;;    (setq python-command "/home")
+    (setq python-command "/usr/bin/python3")
+      ;; (use-package posframe)
+      (use-package anaconda-mode)
+      (add-hook 'python-mode-hook 'anaconda-mode)
+      (eval-after-load 'python
+        '(define-key python-mode-map "\C-xpb" 'python-nav-backward-block))
+      (eval-after-load 'python
+        '(define-key python-mode-map "\C-xpl" 'python-nav-backward-up-list))
+      (eval-after-load 'python
+        '(define-key python-mode-map "\C-xpf" 'python-nav-forward-block))
+      (eval-after-load 'python
+        '(define-key python-mode-map "\C-xpm" 'python-mark-defun))
+      (eval-after-load 'python
+        '(define-key python-mode-map "\M-i" 'anaconda-mode-complete))
   #+END_SRC
 
 
@@ -1391,7 +1391,8 @@ Dangerous key binding:
 
   (global-set-key (kbd "<f6>") (lambda() (interactive)(find-file "/home/vkocheganov/mounted/NAS/homes_Viktor.Kocheganov/VDC/data/")))
   (global-set-key (kbd "<f7>") (lambda() (interactive)(find-file "/ssh:ts13:/home/vkocheganov/link_training/vic_models/")))
-  (global-set-key (kbd "<f8>") (lambda() (interactive)(find-file "/ssh:dl4:/home/vkocheganov/VDC/VideoAnnotation/")))
+;;  (global-set-key (kbd "<f8>") (lambda() (interactive)(find-file "/ssh:dl4:/home/vkocheganov/VDC/VideoAnnotation/")))
+  (global-set-key (kbd "<f8>") (lambda() (interactive)(find-file "/ssh:ts13:/home/vkocheganov/VDC/new_vdc/_install/x86_64-linux-gnu-5.4.0-x64-release-gpu/bin/")))
 #+END_SRC
 * gnuplot
 #+BEGIN_SRC emacs-lisp
