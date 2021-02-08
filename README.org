@@ -698,7 +698,7 @@ Position the cursor at it's beginning, according to the current mode."
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
-  (require 'csv-mode)
+  (use-package csv-mode)
 #+END_SRC
 * Helm
 ** Helm-gtags
